@@ -55,16 +55,38 @@
 				</button>
 			</div>
 
-			<div class=" bg-blue-800 text-white font-selector py-2 px-4" class:hidden={!isMenuOpen}>
-				<button on:click={() => (tab = 'About')} class="block py-1 hover:bg-blue-700 w-[100%]"
-					>About The Company</button
+			<div
+				class="shadow-efect ml-10 rounded-b-lg mr-10 text-white font-selector content-center place-items-center justify-center px-overflow-hidden transition-all duration-300 ease-in-out"
+				class:max-h-0={!isMenuOpen}
+				class:max-h-screen={isMenuOpen}
+				class:opacity-0={!isMenuOpen}
+				class:opacity-100={isMenuOpen}
+				class:py-0={!isMenuOpen}
+				class:py-2={isMenuOpen}
+			>
+				<button
+					on:click={() => (tab = 'About')}
+					class="block py-1 hover:bg-gray-500 w-[80%] rounded-sm">About The Company</button
 				>
-				<button class="block py-1 hover:bg-blue-700 w-[100%]">Social</button>
+				<button class="block py-1 hover:bg-gray-500 w-[80%] rounded-sm">Social</button>
 			</div>
 
 			<div class="p-4 text-white">
 				{#if tab === 'default'}
-					<p>Contenido principal de la tarjeta va aquí...</p>
+					<div
+						class="flex gap-[1rem] content-center place-items-center justify-center text-center mt-10"
+					>
+						<div class="bg-gray-400 w-[100%] h-[55vh] rounded-sm collapseOn-Mobile">
+							<p>Si</p>
+						</div>
+						<div class="bg-stone-200 w-[100%] h-[55vh] rounded-sm text-black font-selector">
+							<div class="mt-4 text-[2.5rem]">Welcome to out platform</div>
+							<div></div>
+						</div>
+						<div class="bg-green-800 w-[100%] h-[55vh] rounded-sm collapseOn-Mobile">
+							<p>SinoSi</p>
+						</div>
+					</div>
 				{:else if tab === 'About'}
 					<p>Carajooooo</p>
 				{/if}
@@ -87,10 +109,15 @@
 		font-family: 'Kode Mono', monospace;
 	}
 
+	.shadow-efect {
+		box-shadow: 0 10px 25px 0 rgba(156, 155, 149, 0.61);
+		background-color: rgb(73, 72, 68);
+	}
+
 	.Card {
 		width: 100%;
-		height: 80%;
-		background-color: blue;
+		height: 85%;
+		background-color: rgb(84, 84, 94);
 	}
 
 	.footer {
@@ -106,8 +133,14 @@
 		border-top: 0px;
 		border-color: white;
 		border-width: 0.1px;
-		background-color: #0046cb;
-		border-top-left-radius: 10px;
-		border-top-right-radius: 10px;
+		background-color: #919bad;
+		border-top-left-radius: 1px;
+		border-top-right-radius: 1px;
+	}
+
+	@media (max-width: 800px) {
+		.collapseOn-Mobile {
+			display: none;
+		}
 	}
 </style>
