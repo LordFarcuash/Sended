@@ -18,8 +18,7 @@
 
 <div class="gap-4">
 	<div class="header">
-		<button class="btn-register">Register</button>
-		<button class="btn-login">Login</button>
+		<button on:click={() => handleTabChange('Login')} class="btn-login">Login</button>
 	</div>
 
 	<div class="main-container">
@@ -68,8 +67,8 @@
 			</nav>
 
 			<div class="content-wrapper">
-				<div class="cards-container">
-					{#if tab === 'Home'}
+				{#if tab === 'Home'}
+					<div class="cards-container">
 						<!-- Card 1: Open Source -->
 						<div class="feature-card feature-card-side">
 							<div class="icon-container">
@@ -91,8 +90,8 @@
 							</div>
 							<h3 class="card-title">Open Source</h3>
 							<p class="card-description">
-								Código abierto y transparente. Forma parte de una comunidad que valora la
-								colaboración y la innovación constante.
+								Open source and transparent. Be part of a community that values ​​collaboration and
+								constant innovation.
 							</p>
 						</div>
 
@@ -116,8 +115,8 @@
 							</div>
 							<h3 class="card-title">Welcome to our platform</h3>
 							<p class="card-description">
-								Soluciones modernas y eficientes diseñadas para tu negocio. Gestiona tus operaciones
-								con elegancia y control total.
+								Modern Solution and efficient designed for your company. Manage your operations with
+								elegance and complete control.
 							</p>
 						</div>
 
@@ -135,16 +134,104 @@
 							</div>
 							<h3 class="card-title">Fácil de Usar</h3>
 							<p class="card-description">
-								Interfaz intuitiva optimizada para desktop y mobile. Tu experiencia es nuestra
-								prioridad en cualquier dispositivo.
+								Optimized Interface, Intuitive for desktop and mobile. Your Experience is our
+								priority on any device.
 							</p>
 						</div>
-					{:else if tab === 'About'}
-						<div class="flex">
-							<p>Hola</p>
+					</div>
+				{:else if tab === 'About'}
+					<div class="about-cards-container">
+						<div class="about-card">
+							<div class="icon-container main-icon">
+								<svg
+									class="icon main-icon-svg"
+									viewBox="0 0 24 24"
+									fill="none"
+									stroke="currentColor"
+								>
+									<path
+										stroke-linecap="round"
+										stroke-linejoin="round"
+										stroke-width="2"
+										d="M5 13l4 4L19 7"
+									/>
+									<rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
+								</svg>
+							</div>
+							<h3 class="card-title">Easy Software Set Up</h3>
+							<p class="card-description">
+								Follow the video on Github to setup everything you need for this project to work.
+								Every step is well explain for your technicians and non-technicians to set it up.
+							</p>
 						</div>
-					{/if}
-				</div>
+						<div class="about-card">
+							<div class="icon-container main-icon">
+								<svg
+									width="80px"
+									height="80px"
+									viewBox="0 0 24 24"
+									xmlns="http://www.w3.org/2000/svg"
+									fill="none"
+									stroke="currentColor"
+									><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g
+										id="SVGRepo_tracerCarrier"
+										stroke-linecap="round"
+										stroke-linejoin="round"
+									></g><g id="SVGRepo_iconCarrier">
+										<defs>
+											<style>
+												.cls-1,
+												.cls-2 {
+													fill: none;
+													stroke: #ffff;
+													stroke-miterlimit: 10;
+													stroke-width: 0.9px;
+												}
+												.cls-1 {
+													stroke-linecap: square;
+												}
+											</style>
+										</defs>
+										<g id="reciept">
+											<line class="cls-1" x1="8.18" y1="9.16" x2="12.95" y2="9.16"></line>
+											<line class="cls-1" x1="8.18" y1="12.98" x2="12.95" y2="12.98"></line>
+											<line class="cls-1" x1="8.18" y1="16.8" x2="12.95" y2="16.8"></line>
+											<path
+												class="cls-1"
+												d="M19.64,22.52H4.36A2.86,2.86,0,0,1,1.5,19.66V2.48L4,4.39,6.59,2.48,9.13,4.39l2.55-1.91,2.54,1.91,2.55-1.91V19.66a2.87,2.87,0,0,0,2.87,2.86Z"
+											></path> <line class="cls-2" x1="4.36" y1="9.16" x2="6.27" y2="9.16"></line>
+											<line class="cls-2" x1="4.36" y1="12.98" x2="6.27" y2="12.98"></line>
+											<line class="cls-2" x1="4.36" y1="16.8" x2="6.27" y2="16.8"></line>
+											<path
+												class="cls-2"
+												d="M18.68,10.11H22.5v9.55a2.87,2.87,0,0,1-5.73,0V10.11h1.91Z"
+											></path>
+										</g>
+									</g></svg
+								>
+							</div>
+							<h3 class="card-title">This Software Allow You to</h3>
+							<p class="card-description">
+								This software can Create User for Each department for them Creating Tickets for
+								other departments, creating a self controlled ticket sistem.
+							</p>
+						</div>
+					</div>
+				{:else if tab === 'Login'}
+					<div class="login-cards-container">
+						<div class="login-card">
+							<h3>Login Form</h3>
+							<div>
+								<p>Username</p>
+								<input placeholder="Ejemplo: Ledanix" />
+							</div>
+							<div>
+								<p>Password</p>
+								<input />
+							</div>
+						</div>
+					</div>
+				{/if}
 			</div>
 		</div>
 
@@ -182,7 +269,6 @@
 		box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 	}
 
-	.btn-register,
 	.btn-login {
 		width: 10rem;
 		height: 2.5vh;
@@ -195,17 +281,6 @@
 		transition: all 0.3s ease;
 		text-transform: uppercase;
 		letter-spacing: 0.5px;
-	}
-
-	.btn-register {
-		background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
-		color: white;
-		box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);
-	}
-
-	.btn-register:hover {
-		transform: translateY(-2px);
-		box-shadow: 0 6px 20px rgba(99, 102, 241, 0.4);
 	}
 
 	.btn-login {
@@ -383,7 +458,7 @@
 	/* Content Wrapper */
 	.content-wrapper {
 		flex: 1;
-		padding: 3rem 2rem;
+		padding: 3rem 1rem;
 		display: flex;
 		align-items: center;
 		justify-content: center;
@@ -395,9 +470,40 @@
 		grid-template-columns: repeat(3, 1fr);
 		gap: 2rem;
 		width: 100%;
-		max-width: 1200px;
+		max-width: 1800px;
 	}
 
+	/* Cards Container */
+	.about-cards-container {
+		display: grid;
+		grid-template-columns: repeat(2, 1fr);
+		gap: 2rem;
+		width: 100%;
+		max-width: 1800px;
+	}
+
+	/* Cards Container */
+	.login-cards-container {
+		display: flex;
+		width: 50%;
+	}
+
+	.login-card {
+		background: white;
+		border-radius: 12px;
+		padding: 2rem;
+		text-align: center;
+		border: 2px solid #6366f1;
+		transition: all 0.3s ease;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+		min-height: 350px;
+		box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+		max-width: 1200px;
+		width: 100%;
+	}
 	/* Feature Card */
 	.feature-card {
 		background: white;
@@ -426,6 +532,30 @@
 		box-shadow: 0 8px 30px rgba(99, 102, 241, 0.15);
 	}
 
+	/* About Card */
+	.about-card {
+		background: white;
+		border-radius: 12px;
+		padding: 2rem;
+		text-align: center;
+		border: 2px solid #e0e7ff;
+		transition: all 0.3s ease;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+		min-height: 350px;
+		box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+		max-width: 1200px;
+		width: 100%;
+	}
+
+	.about-card:hover {
+		border-color: #6366f1;
+		box-shadow: 0 8px 30px rgba(99, 102, 241, 0.15);
+		transform: translateY(-5px);
+	}
+
 	/* Icon Container */
 	.icon-container {
 		width: 80px;
@@ -439,7 +569,8 @@
 		transition: all 0.3s ease;
 	}
 
-	.feature-card:hover .icon-container {
+	.feature-card:hover .icon-container,
+	.about-card:hover .icon-container {
 		background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
 	}
 
@@ -462,7 +593,8 @@
 		color: white;
 	}
 
-	.feature-card:hover .icon {
+	.feature-card:hover .icon,
+	.about-card:hover .icon {
 		color: white;
 	}
 
@@ -514,6 +646,11 @@
 		.feature-card-side {
 			display: none;
 		}
+		.feature-card,
+		.about-card {
+			min-height: 350px;
+			padding: 1.5rem;
+		}
 	}
 
 	@media (max-width: 768px) {
@@ -537,8 +674,9 @@
 			padding: 1.5rem 1rem;
 		}
 
-		.feature-card {
-			min-height: 300px;
+		.feature-card,
+		.about-card {
+			min-height: 350px;
 			padding: 1.5rem;
 		}
 		.feature-card-side {
@@ -567,15 +705,15 @@
 			gap: 0.5rem;
 		}
 
-		.btn-register,
 		.btn-login {
 			width: 8rem;
 			font-size: 0.75rem;
 			height: 2rem;
 		}
 
-		.feature-card {
-			min-height: 280px;
+		.feature-card,
+		.about-card {
+			min-height: 400px;
 			padding: 1rem;
 		}
 
