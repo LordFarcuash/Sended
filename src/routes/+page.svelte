@@ -1,6 +1,6 @@
 <script lang="ts">
 	let isMenuOpen = false;
-	let tab = 'default';
+	let tab = 'Home';
 
 	function toggleBurgerMenu() {
 		isMenuOpen = !isMenuOpen;
@@ -25,7 +25,7 @@
 	<div class="main-container">
 		<div class="card">
 			<div class="header-card">
-				<div class="brand">
+				<div class="brand font-selector">
 					<button on:click={() => handleTabChange('Home')}>SendedMaster</button>
 				</div>
 
@@ -63,7 +63,7 @@
 				</button>
 				<button on:click={() => handleTabChange('About')} class="menu-item">
 					<span class="menu-icon">ℹ️</span>
-					<span>About The Company</span>
+					<span>About The Service</span>
 				</button>
 			</nav>
 
@@ -73,14 +73,21 @@
 						<!-- Card 1: Open Source -->
 						<div class="feature-card feature-card-side">
 							<div class="icon-container">
-								<svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-									<path
+								<svg
+									class="icon"
+									xmlns="http://www.w3.org/2000/svg"
+									width="200"
+									height="200"
+									viewBox="0 0 24 24"
+									><path
+										fill="none"
+										stroke="currentColor"
 										stroke-linecap="round"
 										stroke-linejoin="round"
-										stroke-width="2"
-										d="M10 20v-6m4 6v-6m7-3a9 9 0 11-18 0 9 9 0 0118 0z"
-									/>
-								</svg>
+										stroke-width="1.5"
+										d="M12 3a9 9 0 0 1 3.618 17.243l-2.193-5.602a3 3 0 1 0-2.849 0l-2.193 5.603A9 9 0 0 1 12 3z"
+									/></svg
+								>
 							</div>
 							<h3 class="card-title">Open Source</h3>
 							<p class="card-description">
@@ -132,6 +139,10 @@
 								prioridad en cualquier dispositivo.
 							</p>
 						</div>
+					{:else if tab === 'About'}
+						<div class="flex">
+							<p>Hola</p>
+						</div>
 					{/if}
 				</div>
 			</div>
@@ -154,6 +165,10 @@
 		display: flex;
 		flex-direction: column;
 		height: 100vh;
+	}
+
+	.font-selector {
+		font-family: 'Kode Mono', monospace;
 	}
 
 	/* Header */
