@@ -1,10 +1,27 @@
 <script lang="ts">
+	import { goto } from '$app/navigation';
+
 	let username = '';
 	let password = '';
 
-	function handleLogin(e: Event) {
+	let loginError = false;
+
+	async function handleLogin(e: Event) {
 		e.preventDefault();
-		console.log('Login attempt:', { username, password });
+
+		const res = await fetch('/api/login', {
+			method: 'POST',
+			headers: { 'Content-Type': 'application/json' },
+			body: JSON.stringify({ username, password })
+		});
+
+		const data = await res.json();
+
+		if (data.success) {
+			goto('/dashboard');
+		} else {
+			loginError = true;
+		}
 	}
 </script>
 
@@ -13,14 +30,30 @@
 		<h2 class="login-title">Login Form</h2>
 		<form on:submit={handleLogin} class="login-form">
 			<div class="form-group">
-				<input type="text" bind:value={username} placeholder=" " class="form-input" required />
+				<input
+					type="text"
+					bind:value={username}
+					placeholder=" "
+					class="form-input {loginError ? 'input-error' : ''}"
+					required
+				/>
 				<label class="form-label">Username</label>
 			</div>
 
 			<div class="form-group">
-				<input type="password" bind:value={password} placeholder=" " class="form-input" required />
+				<input
+					type="password"
+					bind:value={password}
+					placeholder=" "
+					class="form-input {loginError ? 'input-error' : ''}"
+					required
+				/>
 				<label class="form-label">Password</label>
 			</div>
+
+			{#if loginError}
+				<p class="text-red-600 text-sm mb-2">Invalid username or password.</p>
+			{/if}
 
 			<button type="submit" class="submit-btn">Login</button>
 		</form>
@@ -136,6 +169,19 @@
 
 	.submit-btn:active {
 		transform: translateY(0);
+	}
+
+	.input-error {
+		width: 100%;
+		padding: 0.875rem 1rem;
+		border: 2px solid #ff0000;
+		border-radius: 8px;
+		font-size: 1rem;
+		font-family: 'Kode Mono', monospace;
+		color: #2d3e5f;
+		background: white;
+		transition: all 0.3s ease;
+		outline: none;
 	}
 
 	/* Responsive Design */
