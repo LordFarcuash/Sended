@@ -57,17 +57,17 @@
 					</svg>
 				</button>
 			</div>
-
-			<!-- Mobile Menu -->
-			<nav class="mobile-menu" class:open={isMenuOpen}>
-				<button on:click={() => handleTabChange('Home')} class="menu-item">
-					<span class="menu-icon">🏠</span>
-					<span>Home</span>
-				</button>
-				<button on:click={() => handleTabChange('About')} class="menu-item">
-					<span class="menu-icon">ℹ️</span>
-					<span>About The Service</span>
-				</button>
+			<nav class="floating-menu" class:open={isMenuOpen}>
+				<div class="menu-content">
+					<button on:click={() => handleTabChange('Home')} class="menu-item">
+						<span class="menu-icon">🏠</span>
+						<span>Home</span>
+					</button>
+					<button on:click={() => handleTabChange('About')} class="menu-item">
+						<span class="menu-icon">ℹ️</span>
+						<span>About The Service</span>
+					</button>
+				</div>
 			</nav>
 
 			<div class="content-wrapper">
@@ -104,7 +104,6 @@
 		font-family: 'Kode Mono', monospace;
 	}
 
-	/* Header */
 	.header {
 		background: linear-gradient(135deg, #2d3e5f 0%, #3d4e6f 100%);
 		height: 5vh;
@@ -127,9 +126,6 @@
 		transition: all 0.3s ease;
 		text-transform: uppercase;
 		letter-spacing: 0.5px;
-	}
-
-	.btn-login {
 		background: rgba(255, 255, 255, 0.15);
 		color: white;
 		border: 1.5px solid rgba(255, 255, 255, 0.3);
@@ -141,7 +137,6 @@
 		border-color: rgba(255, 255, 255, 0.5);
 	}
 
-	/* Main Container */
 	.main-container {
 		flex: 1;
 		padding: 1.5rem;
@@ -149,9 +144,9 @@
 		flex-direction: column;
 		gap: 1rem;
 		overflow-y: auto;
+		position: relative;
 	}
 
-	/* Card Principal */
 	.card {
 		width: 100%;
 		height: 85%;
@@ -161,9 +156,9 @@
 		display: flex;
 		flex-direction: column;
 		overflow: hidden;
+		position: relative;
 	}
 
-	/* Header de la Card */
 	.header-card {
 		background: linear-gradient(135deg, #f5f7fa 0%, #e9ecef 100%);
 		border-bottom: 2px solid #e0e7ff;
@@ -173,6 +168,7 @@
 		align-items: center;
 		padding: 0 1.5rem;
 		position: relative;
+		z-index: 20;
 	}
 
 	.brand button {
@@ -190,7 +186,6 @@
 		color: #6366f1;
 	}
 
-	/* Burger Button */
 	.burger-btn {
 		display: flex;
 		background: none;
@@ -205,6 +200,7 @@
 		justify-content: center;
 		border-radius: 8px;
 		transition: all 0.3s ease;
+		z-index: 30;
 	}
 
 	.burger-btn:hover {
@@ -244,25 +240,51 @@
 		transform: scale(1) rotate(0deg);
 	}
 
-	/* Mobile Menu */
-	.mobile-menu {
-		background: linear-gradient(135deg, #f5f7fa 0%, #e9ecef 100%);
-		border-bottom: 2px solid #e0e7ff;
-		display: none;
-		flex-direction: column;
-		gap: 0.75rem;
-		padding: 1rem;
-		max-height: 0;
-		opacity: 0;
-		overflow: hidden;
-		transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+	.floating-menu {
+		position: absolute;
+		top: 5vh;
+		left: 0;
+		width: 100%;
+		display: flex;
+		justify-content: center;
+		pointer-events: none;
+		z-index: 25;
+		transition: all 0.3s ease;
 	}
 
-	.mobile-menu.open {
+	.menu-content {
+		background: white;
+		border: 2px solid #e0e7ff;
+		border-radius: 0 0 16px 16px; /* Bordes hacia arriba cerrados */
+		box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+		padding: 1rem 1rem 1.25rem 1rem;
 		display: flex;
-		max-height: 500px;
+		flex-direction: column;
+		gap: 0.75rem;
+		width: 90%;
+		max-width: 400px;
+
+		/* Estado inicial (cerrado) */
+		opacity: 0;
+		transform: translateY(-20px) scaleY(0.95);
+		transform-origin: top center;
+		pointer-events: none;
+
+		transition:
+			opacity 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+			transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+	}
+
+	.floating-menu.open .menu-content {
 		opacity: 1;
-		padding: 1rem;
+		transform: translateY(0) scaleY(1);
+		pointer-events: all;
+	}
+
+	/* Transición de cierre “replegándose hacia arriba” */
+	.floating-menu:not(.open) .menu-content {
+		opacity: 0;
+		transform: translateY(-20px) scaleY(0.95);
 	}
 
 	.menu-item {
@@ -289,11 +311,6 @@
 		transform: translateX(4px);
 	}
 
-	.menu-item:active {
-		background: #dbeafe;
-		border-color: #4f46e5;
-	}
-
 	.menu-icon {
 		font-size: 1.25rem;
 		display: inline-flex;
@@ -301,18 +318,16 @@
 		justify-content: center;
 	}
 
-	/* Content Wrapper */
 	.content-wrapper {
 		flex: 1;
 		padding: 3rem 1rem;
 		display: flex;
 		align-items: center;
 		justify-content: center;
+		position: relative;
+		z-index: 1;
 	}
 
-	/* Login Container */
-
-	/* Footer */
 	.footer {
 		width: 100%;
 		height: 8%;
@@ -321,7 +336,7 @@
 		align-items: center;
 		justify-content: center;
 		color: white;
-		border-radius: 16px 16px 16px 16px;
+		border-radius: 16px;
 		margin-top: 1rem;
 		box-shadow: 0 -4px 15px rgba(0, 0, 0, 0.1);
 	}
@@ -330,7 +345,6 @@
 		font-size: 0.9rem;
 		letter-spacing: 0.5px;
 	}
-
 	/* Responsive Design */
 	@media (max-width: 1024px) {
 		.content-wrapper {
