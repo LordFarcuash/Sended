@@ -368,14 +368,6 @@
 		.content-wrapper {
 			padding: 1.5rem 1rem;
 		}
-
-		.mobile-menu {
-			display: none;
-		}
-
-		.mobile-menu.open {
-			display: flex;
-		}
 	}
 
 	@media (max-width: 480px) {
