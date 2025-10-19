@@ -212,6 +212,102 @@
 				</div>
 			</div>
 		{/if}
+
+		<!-- Added Create Ticket form section -->
+		{#if activeSection === 'Assigned'}
+			<div class="space-y-6">
+				<div class="flex items-center justify-between">
+					<h2 class="text-3xl font-bold text-foreground">Create New Ticket</h2>
+				</div>
+
+				<div class="bg-card border border-border rounded-xl p-8 shadow-lg">
+					<form class="space-y-6">
+						<!-- Ticket Title -->
+						<div class="space-y-2">
+							<label for="title" class="block text-sm font-semibold text-card-foreground">
+								Ticket Title <span class="text-red-500">*</span>
+							</label>
+							<input
+								type="text"
+								id="title"
+								name="title"
+								placeholder="Enter a brief description of the issue"
+								class="w-full px-4 py-3 bg-background border border-border rounded-lg text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
+							/>
+						</div>
+
+						<!-- Department and Priority Row -->
+						<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+							<!-- Department -->
+							<div class="space-y-2">
+								<label for="department" class="block text-sm font-semibold text-card-foreground">
+									Department <span class="text-red-500">*</span>
+								</label>
+								<select
+									id="department"
+									name="department"
+									class="w-full px-4 py-3 bg-background border border-border rounded-lg text-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
+								>
+									<option value="">Select a department</option>
+									<option value="it-support">IT Support</option>
+									<option value="development">Development</option>
+									<option value="sales">Sales</option>
+									<option value="customer-service">Customer Service</option>
+									<option value="hr">Human Resources</option>
+									<option value="finance">Finance</option>
+								</select>
+							</div>
+
+							<!-- Priority -->
+							<div class="space-y-2">
+								<label for="priority" class="block text-sm font-semibold text-card-foreground">
+									Priority <span class="text-red-500">*</span>
+								</label>
+								<select
+									id="priority"
+									name="priority"
+									class="w-full px-4 py-3 bg-background border border-border rounded-lg text-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
+								>
+									<option value="">Select priority level</option>
+									<option value="low">Low</option>
+									<option value="medium">Medium</option>
+									<option value="high">High</option>
+								</select>
+							</div>
+						</div>
+
+						<!-- Description -->
+						<div class="space-y-2">
+							<label for="description" class="block text-sm font-semibold text-card-foreground">
+								Description <span class="text-red-500">*</span>
+							</label>
+							<textarea
+								id="description"
+								name="description"
+								rows="6"
+								placeholder="Provide detailed information about the issue or request..."
+								class="w-full px-4 py-3 bg-background border border-border rounded-lg text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all resize-none"
+							></textarea>
+						</div>
+
+						<!-- Form Actions -->
+						<div class="flex flex-col sm:flex-row gap-4 pt-4">
+							<button
+								type="submit"
+								class="flex-1 px-6 py-3 bg-primary text-primary-foreground rounded-lg font-semibold hover:opacity-90 transition-opacity shadow-md hover:shadow-lg"
+							>
+								Submit Ticket
+							</button>
+						</div>
+
+						<!-- Required Fields Note -->
+						<p class="text-xs text-muted-foreground text-center pt-2">
+							<span class="text-red-500">*</span> Required fields
+						</p>
+					</form>
+				</div>
+			</div>
+		{/if}
 	</main>
 
 	<nav
