@@ -82,7 +82,7 @@
 		</div>
 
 		<div class="footer">
-			<p>&copy; 2025 SendedMaster. Todos los derechos reservados.</p>
+			<p>&copy; 2025 SendedMaster. Publicado bajo licencia MIT.</p>
 		</div>
 	</div>
 </div>
