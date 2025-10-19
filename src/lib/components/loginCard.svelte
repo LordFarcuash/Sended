@@ -18,7 +18,14 @@
 		const data = await res.json();
 
 		if (data.success) {
-			goto('/dashboard');
+			// Redirigir según el rol
+			if (data.role === 'admin') {
+				console.log('Usuario admin');
+				goto('/dashboard-admin');
+			} else {
+				console.log('Usuario normal');
+				goto('/');
+			}
 		} else {
 			loginError = true;
 		}

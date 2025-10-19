@@ -1,40 +1,16 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
-	import {
-		Menu,
-		Building2,
-		Key,
-		Ticket,
-		Users,
-		Clock,
-		CheckCircle2,
-		AlertCircle
-	} from '@lucide/svelte';
+	import { Building2, Ticket, Clock, CheckCircle2, AlertCircle } from '@lucide/svelte';
 
 	let activeSection = $state('tickets');
 	let mobileMenuOpen = $state(false);
 
 	const sections = [
-		{ id: 'departments', label: 'Departments', icon: Building2 },
-		{ id: 'credentials', label: 'Credentials', icon: Key },
-		{ id: 'tickets', label: 'Tickets', icon: Ticket },
-		{ id: 'Assigned', label: 'Assigned', icon: Ticket }
+		{ id: 'tickets', label: 'Assigned Tickets', icon: Ticket },
+		{ id: 'Assigned', label: 'Create Ticket', icon: Ticket }
 	];
 
 	// Sample data
-	const departments = [
-		{ id: 1, name: 'IT Support', members: 12, activeTickets: 23 },
-		{ id: 2, name: 'Sales', members: 8, activeTickets: 15 },
-		{ id: 3, name: 'Customer Service', members: 15, activeTickets: 42 },
-		{ id: 4, name: 'Development', members: 20, activeTickets: 8 }
-	];
-
-	const credentials = [
-		{ id: 1, service: 'Database Server', username: 'admin', lastUsed: '2 hours ago' },
-		{ id: 2, service: 'Email Server', username: 'support@company.com', lastUsed: '1 day ago' },
-		{ id: 3, service: 'Cloud Storage', username: 'cloud-admin', lastUsed: '3 hours ago' },
-		{ id: 4, service: 'API Gateway', username: 'api-key-001', lastUsed: '30 minutes ago' }
-	];
 
 	const tickets = [
 		{
@@ -107,8 +83,21 @@
 		}
 	}
 
-	function logout() {
-		goto('/');
+	async function logout() {
+		try {
+			const res = await fetch('/api/logout', {
+				method: 'POST',
+				headers: { 'Content-Type': 'application/json' }
+			});
+
+			if (res.ok) {
+				goto('/');
+			}
+		} catch (error) {
+			console.error('Error al cerrar sesión:', error);
+			// Redirigir de todos modos
+			goto('/');
+		}
 	}
 </script>
 
@@ -117,7 +106,7 @@
 		<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 			<div class="flex items-center justify-between h-16">
 				<div class="flex items-center gap-3">
-					<h1 class="text-xl font-bold tracking-tight">SendedMaster</h1>
+					<h1 class="text-xl font-bold tracking-tight">SendedMaster Worker Panel</h1>
 					<button onclick={logout} class="btn-login">Logout</button>
 				</div>
 				<div class="hidden md:flex items-center gap-2">
@@ -162,103 +151,6 @@
 		{/if}
 	</nav>
 	<main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 pb-24 md:pb-8">
-		{#if activeSection === 'departments'}
-			<div class="space-y-6">
-				<div class="flex items-center justify-between">
-					<h2 class="text-3xl font-bold text-foreground">Departments</h2>
-					<button
-						class="px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:opacity-90 transition-opacity"
-					>
-						Add Department
-					</button>
-				</div>
-
-				<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-					{#each departments as dept}
-						<div
-							class="bg-card border border-border rounded-xl p-6 hover:shadow-lg transition-shadow"
-						>
-							<div class="flex items-start justify-between mb-4">
-								<div class="p-3 bg-primary/10 rounded-lg">
-									<Building2 class="w-6 h-6 text-primary" />
-								</div>
-								<span class="px-3 py-1 bg-accent/10 text-accent text-sm font-medium rounded-full">
-									{dept.activeTickets} active
-								</span>
-							</div>
-							<h3 class="text-xl font-semibold text-card-foreground mb-2">{dept.name}</h3>
-							<div class="flex items-center gap-2 text-muted-foreground">
-								<Users class="w-4 h-4" />
-								<span class="text-sm">{dept.members} members</span>
-							</div>
-						</div>
-					{/each}
-				</div>
-			</div>
-		{/if}
-
-		{#if activeSection === 'credentials'}
-			<div class="space-y-6">
-				<div class="flex items-center justify-between">
-					<h2 class="text-3xl font-bold text-foreground">Credentials</h2>
-					<button
-						class="px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:opacity-90 transition-opacity"
-					>
-						Add Credential
-					</button>
-				</div>
-
-				<div class="bg-card border border-border rounded-xl overflow-hidden">
-					<div class="overflow-x-auto">
-						<table class="w-full">
-							<thead class="bg-muted">
-								<tr>
-									<th class="px-6 py-4 text-left text-sm font-semibold text-foreground">Service</th>
-									<th class="px-6 py-4 text-left text-sm font-semibold text-foreground">Username</th
-									>
-									<th class="px-6 py-4 text-left text-sm font-semibold text-foreground"
-										>Last Used</th
-									>
-									<th class="px-6 py-4 text-right text-sm font-semibold text-foreground">Actions</th
-									>
-								</tr>
-							</thead>
-							<tbody class="divide-y divide-border">
-								{#each credentials as cred}
-									<tr class="hover:bg-muted/50 transition-colors">
-										<td class="px-6 py-4">
-											<div class="flex items-center gap-3">
-												<div class="p-2 bg-primary/10 rounded-lg">
-													<Key class="w-4 h-4 text-primary" />
-												</div>
-												<span class="font-medium text-card-foreground">{cred.service}</span>
-											</div>
-										</td>
-										<td class="px-6 py-4 text-muted-foreground font-mono text-sm"
-											>{cred.username}</td
-										>
-										<td class="px-6 py-4">
-											<div class="flex items-center gap-2 text-muted-foreground text-sm">
-												<Clock class="w-4 h-4" />
-												{cred.lastUsed}
-											</div>
-										</td>
-										<td class="px-6 py-4 text-right">
-											<button
-												class="px-3 py-1 text-sm text-primary hover:bg-primary/10 rounded-lg transition-colors"
-											>
-												View
-											</button>
-										</td>
-									</tr>
-								{/each}
-							</tbody>
-						</table>
-					</div>
-				</div>
-			</div>
-		{/if}
-
 		{#if activeSection === 'tickets'}
 			<div class="space-y-6">
 				<div class="flex items-center justify-between">
