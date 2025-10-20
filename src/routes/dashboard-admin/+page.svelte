@@ -1,8 +1,13 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
-	import { Building2, Key, Ticket, Users, Clock, CheckCircle2, AlertCircle } from '@lucide/svelte';
+	import { Building2, Key, Ticket, Clock, CheckCircle2, AlertCircle } from '@lucide/svelte';
+	import type { PageData } from './$types';
 
-	let activeSection = $state('tickets');
+	let { data }: { data: PageData } = $props();
+	let departments = $derived(data.departments);
+	let tickets = $derived(data.tickets);
+
+	let activeSection = $state('departments');
 	let mobileMenuOpen = $state(false);
 
 	const sections = [
@@ -12,14 +17,6 @@
 		{ id: 'Assigned', label: 'Assigned', icon: Ticket }
 	];
 
-	// Sample data
-	const departments = [
-		{ id: 1, name: 'IT Support', members: 12, activeTickets: 23 },
-		{ id: 2, name: 'Sales', members: 8, activeTickets: 15 },
-		{ id: 3, name: 'Customer Service', members: 15, activeTickets: 42 },
-		{ id: 4, name: 'Development', members: 20, activeTickets: 8 }
-	];
-
 	const credentials = [
 		{ id: 1, service: 'Database Server', username: 'admin', lastUsed: '2 hours ago' },
 		{ id: 2, service: 'Email Server', username: 'support@company.com', lastUsed: '1 day ago' },
@@ -27,57 +24,12 @@
 		{ id: 4, service: 'API Gateway', username: 'api-key-001', lastUsed: '30 minutes ago' }
 	];
 
-	const tickets = [
-		{
-			id: 1001,
-			title: 'Login issues on mobile app',
-			status: 'open',
-			priority: 'high',
-			department: 'IT Support',
-			created: '2 hours ago'
-		},
-		{
-			id: 1002,
-			title: 'Request for new feature',
-			status: 'in-progress',
-			priority: 'medium',
-			department: 'Development',
-			created: '1 day ago'
-		},
-		{
-			id: 1003,
-			title: 'Payment processing error',
-			status: 'open',
-			priority: 'high',
-			department: 'Sales',
-			created: '30 minutes ago'
-		},
-		{
-			id: 1004,
-			title: 'Account verification needed',
-			status: 'resolved',
-			priority: 'low',
-			department: 'Customer Service',
-			created: '3 days ago'
-		},
-		{
-			id: 1005,
-			title: 'Email delivery failure',
-			status: 'open',
-			priority: 'medium',
-			department: 'IT Support',
-			created: '5 hours ago'
-		}
-	];
-
 	// @ts-ignore
 	function getStatusColor(status) {
 		switch (status) {
-			case 'open':
-				return 'text-red-600 dark:text-red-400';
-			case 'in-progress':
-				return 'text-blue-600 dark:text-blue-400';
-			case 'resolved':
+			case 'Pending':
+				return 'text-yellow-600 dark:text-blue-400';
+			case 'Solved':
 				return 'text-green-600 dark:text-green-400';
 			default:
 				return 'text-slate-600 dark:text-slate-400';
@@ -87,11 +39,11 @@
 	// @ts-ignore
 	function getPriorityBadge(priority) {
 		switch (priority) {
-			case 'high':
+			case 'High':
 				return 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-300';
-			case 'medium':
+			case 'Medium':
 				return 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-300';
-			case 'low':
+			case 'Low':
 				return 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300';
 			default:
 				return 'bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300';
@@ -191,10 +143,6 @@
 								</span>
 							</div>
 							<h3 class="text-xl font-semibold text-card-foreground mb-2">{dept.name}</h3>
-							<div class="flex items-center gap-2 text-muted-foreground">
-								<Users class="w-4 h-4" />
-								<span class="text-sm">{dept.members} members</span>
-							</div>
 						</div>
 					{/each}
 				</div>
@@ -296,10 +244,6 @@
 										<div class="flex items-center gap-2">
 											<Building2 class="w-4 h-4" />
 											{ticket.department}
-										</div>
-										<div class="flex items-center gap-2">
-											<Clock class="w-4 h-4" />
-											{ticket.created}
 										</div>
 									</div>
 								</div>

@@ -1,8 +1,8 @@
 import { json } from '@sveltejs/kit';
+import type { RequestEvent } from '@sveltejs/kit';
 import { ADMIN_USERNAME, ADMIN_PASS } from '$env/static/private';
 
-
-export async function POST({ request, cookies }) {
+export async function POST({ request, cookies }: RequestEvent) {
 	const { username, password } = await request.json();
 
 	if (username === ADMIN_USERNAME && password === ADMIN_PASS) {
