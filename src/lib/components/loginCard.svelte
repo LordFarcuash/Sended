@@ -24,7 +24,7 @@
 				goto('/dashboard-admin');
 			} else {
 				console.log('Usuario normal');
-				goto('/');
+				goto('/dashboard-users');
 			}
 		} else {
 			loginError = true;
@@ -38,28 +38,34 @@
 		<form on:submit={handleLogin} class="login-form">
 			<div class="form-group">
 				<input
+					id="login-username"
+					name="username"
 					type="text"
 					bind:value={username}
 					placeholder=" "
 					class="form-input {loginError ? 'input-error' : ''}"
 					required
 				/>
-				<label class="form-label">Username</label>
+				<label for="login-username" class="form-label">Username</label>
 			</div>
 
 			<div class="form-group">
 				<input
+					id="login-password"
+					name="password"
 					type="password"
 					bind:value={password}
 					placeholder=" "
 					class="form-input {loginError ? 'input-error' : ''}"
 					required
 				/>
-				<label class="form-label">Password</label>
+				<label for="login-password" class="form-label">Password</label>
 			</div>
 
 			{#if loginError}
-				<p class="text-red-600 text-sm mb-2">Invalid username or password.</p>
+				<p class="text-red-600 text-sm mb-2" role="alert" aria-live="assertive">
+					Invalid username or password.
+				</p>
 			{/if}
 
 			<button type="submit" class="submit-btn">Login</button>
