@@ -175,16 +175,6 @@
 			display: none;
 		}
 
-		.icon-container {
-			width: 60px;
-			height: 60px;
-		}
-
-		.main-icon {
-			width: 80px;
-			height: 80px;
-		}
-
 		.icon {
 			width: 35px;
 			height: 35px;
