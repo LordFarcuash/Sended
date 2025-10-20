@@ -1,6 +1,8 @@
 // src/routes/dashboard-admin/+page.server.ts
 import { query } from '$lib/server/db';
-import type { PageServerLoad } from './$types';
+import { fail } from '@sveltejs/kit';
+import type { PageServerLoad, Actions } from './$types';
+import bcrypt from 'bcryptjs';
 
 interface Department {
   id: number;
@@ -39,22 +41,65 @@ export const load: PageServerLoad = async () => {
         status
       FROM tickets
         ORDER BY FIELD(priority, 'High', 'Medium', 'Low'), id DESC
-
     `);
 
     return {
-      departments, tickets
+      departments, 
+      tickets
     };
-
-    
   } catch (error) {
-    console.error('Error al cargar departamentos:', error);
+    console.error('Error al cargar datos:', error);
     return {
       departments: [],
       tickets: []
     };
   }
-
-  
-
 };
+
+// Acciones del formulario
+export const actions: Actions = {
+  createDepartment: async ({ request }) => {
+    const formData = await request.formData();
+    const name = formData.get('name') as string;
+    const username = formData.get('username') as string;
+    let password = formData.get('password') as string;
+
+    // Validaciones
+    if (!name || name.trim().length === 0) {
+      return fail(400, { error: 'El nombre del departamento es requerido' });
+    }
+
+    let hashedPassword = null;
+    if (password && password.trim().length > 0) {
+      const saltRounds = 10;
+      hashedPassword = await bcrypt.hash(password.trim(), saltRounds);
+    }
+
+    try {
+      await query(
+        'INSERT INTO department (name, username, password) VALUES (?, ?, ?)',
+        [name.trim(), username || null, hashedPassword || null]
+      );
+
+      return { success: true, message: 'Departamento creado exitosamente' };
+    } catch (error) {
+      console.error('Error al crear departamento:', error);
+      return fail(500, { error: 'Error al crear el departamento' });
+    }
+  },
+  deleteDepartment: async ({ request }) => {
+    const formData = await request.formData();
+    const departmentId = formData.get('departmentId') as string;
+    if (!departmentId) {
+      return fail(400, { error: 'ID de departamento inválido' });
+    }
+    try {
+      await query('DELETE FROM department WHERE id = ?', [departmentId]);
+      return { success: true, message: 'Departamento eliminado exitosamente' }
+    } catch (error) {
+      console.error('Error al eliminar departamento:', error);
+      return fail(500, { error: 'Error al eliminar el departamento' });
+    }
+  }
+};
+

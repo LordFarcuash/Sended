@@ -1,7 +1,8 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
-	import { Building2, Key, Ticket, Clock, CheckCircle2, AlertCircle } from '@lucide/svelte';
+	import { Building2, Key, Ticket, Clock, BadgeCheck, BadgeX, Trash2 } from '@lucide/svelte';
 	import type { PageData } from './$types';
+	import { enhance } from '$app/forms';
 
 	let { data }: { data: PageData } = $props();
 	let departments = $derived(data.departments);
@@ -9,6 +10,9 @@
 
 	let activeSection = $state('departments');
 	let mobileMenuOpen = $state(false);
+
+	let showDepartmentModal = $state(false);
+	let departmentForm = $state({ name: '', username: '', password: '' });
 
 	const sections = [
 		{ id: 'departments', label: 'Departments', icon: Building2 },
@@ -24,8 +28,7 @@
 		{ id: 4, service: 'API Gateway', username: 'api-key-001', lastUsed: '30 minutes ago' }
 	];
 
-	// @ts-ignore
-	function getStatusColor(status) {
+	function getStatusColor(status: string) {
 		switch (status) {
 			case 'Pending':
 				return 'text-yellow-600 dark:text-blue-400';
@@ -36,8 +39,7 @@
 		}
 	}
 
-	// @ts-ignore
-	function getPriorityBadge(priority) {
+	function getPriorityBadge(priority: string) {
 		switch (priority) {
 			case 'High':
 				return 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-300';
@@ -66,6 +68,15 @@
 			goto('/');
 		}
 	}
+
+	function openDepartmentModal() {
+		showDepartmentModal = true;
+	}
+
+	function closeDepartmentModal() {
+		showDepartmentModal = false;
+		departmentForm = { name: '', username: '', password: '' };
+	}
 </script>
 
 <div class="min-h-screen bg-background">
@@ -74,7 +85,7 @@
 			<div class="flex items-center justify-between h-16">
 				<div class="flex items-center gap-3">
 					<h1 class="text-xl font-bold tracking-tight">SendedMaster Admin Panel</h1>
-					<button onclick={logout} class="btn-login">Logout</button>
+					<button onclick={logout} class="btn-login shadow-lg">Logout</button>
 				</div>
 				<div class="hidden md:flex items-center gap-2">
 					{#each sections as section}
@@ -123,7 +134,8 @@
 				<div class="flex items-center justify-between">
 					<h2 class="text-3xl font-bold text-foreground">Departments</h2>
 					<button
-						class="px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:opacity-90 transition-opacity"
+						onclick={openDepartmentModal}
+						class="px-4 py-2 bg-slate-300 text-black rounded-[15px] font-bold text-foreground text-[0.8rem] hover:bg-slate-400 transition-opacity shadow-lg"
 					>
 						Add Department
 					</button>
@@ -139,10 +151,21 @@
 									<Building2 class="w-6 h-6 text-primary" />
 								</div>
 								<span class="px-3 py-1 bg-accent/10 text-accent text-sm font-medium rounded-full">
-									{dept.activeTickets} active
+									{dept.activeTickets} active tickets
 								</span>
 							</div>
 							<h3 class="text-xl font-semibold text-card-foreground mb-2">{dept.name}</h3>
+							<form method="post" action="?/deleteDepartment" use:enhance>
+								<input type="hidden" name="departmentId" value={dept.id} />
+								<button
+									type="submit"
+									name="deleteDepartment"
+									value="1"
+									aria-label="Eliminar departamento"
+								>
+									<Trash2 class="w-5 h-5 text-red-600 hover:text-red-800 transition-colors" />
+								</button>
+							</form>
 						</div>
 					{/each}
 				</div>
@@ -153,11 +176,6 @@
 			<div class="space-y-6">
 				<div class="flex items-center justify-between">
 					<h2 class="text-3xl font-bold text-foreground">Credentials</h2>
-					<button
-						class="px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:opacity-90 transition-opacity"
-					>
-						Add Credential
-					</button>
 				</div>
 
 				<div class="bg-card border border-border rounded-xl overflow-hidden">
@@ -216,7 +234,7 @@
 				<div class="flex items-center justify-between">
 					<h2 class="text-3xl font-bold text-foreground">Tickets</h2>
 					<button
-						class="px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:opacity-90 transition-opacity"
+						class="px-4 py-2 bg-slate-300 text-black rounded-[15px] font-bold text-foreground text-[0.8rem] hover:bg-slate-400 transition-opacity shadow-lg"
 					>
 						Create Ticket
 					</button>
@@ -249,10 +267,10 @@
 								</div>
 								<div class="flex items-center gap-3">
 									<div class="flex items-center gap-2 {getStatusColor(ticket.status)}">
-										{#if ticket.status === 'resolved'}
-											<CheckCircle2 class="w-5 h-5" />
+										{#if ticket.status === 'Solved'}
+											<BadgeCheck class="w-5 h-5" />
 										{:else}
-											<AlertCircle class="w-5 h-5" />
+											<BadgeX class="w-5 h-5" />
 										{/if}
 										<span class="font-medium capitalize">{ticket.status}</span>
 									</div>
@@ -290,7 +308,130 @@
 	</nav>
 </div>
 
+<!-- Modal para crear departamento -->
+{#if showDepartmentModal}
+	<div
+		class="fixed inset-0 bg-slate-200/55 backdrop-blur-sm flex items-center justify-center z-50 p-4"
+		onclick={closeDepartmentModal}
+		onkeydown={(e) => {
+			if (e.key === 'Enter' || e.key === ' ' || e.key === 'Spacebar') {
+				closeDepartmentModal();
+			}
+		}}
+		role="button"
+		aria-label="Close modal"
+		tabindex="0"
+	>
+		<div
+			class="bg-card border border-border rounded-xl shadow-2xl max-w-md w-full p-6"
+			onclick={(e) => e.stopPropagation()}
+			onkeydown={(e) => e.stopPropagation()}
+			role="dialog"
+			aria-modal="true"
+			tabindex="-1"
+		>
+			<div class="flex items-center justify-between mb-6">
+				<h3 class="text-2xl font-bold text-foreground">Create Department</h3>
+				<button
+					onclick={closeDepartmentModal}
+					aria-label="Close dialog"
+					class="text-muted-foreground hover:text-foreground transition-colors"
+				>
+					<svg
+						xmlns="http://www.w3.org/2000/svg"
+						class="h-6 w-6"
+						fill="none"
+						viewBox="0 0 24 24"
+						stroke="currentColor"
+					>
+						<path
+							stroke-linecap="round"
+							stroke-linejoin="round"
+							stroke-width="2"
+							d="M6 18L18 6M6 6l12 12"
+						/>
+					</svg>
+				</button>
+			</div>
+
+			<form
+				onsubmit={(e) => {
+					e.preventDefault();
+				}}
+				class="space-y-4"
+				method="POST"
+				action="?/createDepartment"
+				use:enhance
+			>
+				<div>
+					<label for="dept-name" class="block text-sm font-medium text-foreground mb-2">
+						Department Name
+					</label>
+					<input
+						id="dept-name"
+						type="text"
+						name="name"
+						bind:value={departmentForm.name}
+						required
+						class="w-full px-4 py-2 bg-background border border-border rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all text-foreground"
+						placeholder="Enter department name"
+					/>
+				</div>
+
+				<div>
+					<label for="dept-username" class="block text-sm font-medium text-foreground mb-2">
+						Username
+					</label>
+					<input
+						id="dept-username"
+						type="text"
+						name="username"
+						bind:value={departmentForm.username}
+						required
+						class="w-full px-4 py-2 bg-background border border-border rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all text-foreground"
+						placeholder="Enter username"
+					/>
+				</div>
+
+				<div>
+					<label for="dept-password" class="block text-sm font-medium text-foreground mb-2">
+						Password
+					</label>
+					<input
+						id="dept-password"
+						type="password"
+						name="password"
+						bind:value={departmentForm.password}
+						required
+						class="w-full px-4 py-2 bg-background border border-border rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all text-foreground"
+						placeholder="Enter password"
+					/>
+				</div>
+
+				<div class="flex gap-3 pt-4">
+					<button
+						type="button"
+						onclick={closeDepartmentModal}
+						class="flex-1 px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors font-medium shadow-lg"
+					>
+						Cancel
+					</button>
+					<button
+						type="submit"
+						class="flex-1 px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors font-medium shadow-lg"
+					>
+						Create
+					</button>
+				</div>
+			</form>
+		</div>
+	</div>
+{/if}
+
 <style>
+	.font-select {
+		font-family: 'Kode Mono', monospace;
+	}
 	.header {
 		background: linear-gradient(135deg, #2d3e5f 0%, #3d4e6f 100%);
 		height: 5vh;
