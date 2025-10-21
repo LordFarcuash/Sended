@@ -20,8 +20,7 @@
 	const sections = [
 		{ id: 'departments', label: 'Departments', icon: Building2 },
 		{ id: 'credentials', label: 'Credentials', icon: Key },
-		{ id: 'tickets', label: 'Tickets', icon: Ticket },
-		{ id: 'Assigned', label: 'Assigned', icon: Ticket }
+		{ id: 'tickets', label: 'Tickets', icon: Ticket }
 	];
 
 	const credentials = [
