@@ -278,7 +278,7 @@
 										<span class="font-medium capitalize">{ticket.status}</span>
 									</div>
 									<div
-										class="flex items-center bg-gray-500/50 rounded-sm items-center pt-2 pl-2 pr-2 pb-1"
+										class="flex items-center bg-slate-300 rounded-sm items-center pt-2 pl-2 pr-2 pb-1"
 									>
 										<form method="post" action="?/deleteTicket" use:enhance>
 											<input type="hidden" name="TicketId" value={ticket.id} class="hidden" />
@@ -288,7 +288,7 @@
 												value="1"
 												aria-label="Eliminar Ticket"
 											>
-												<Trash2 class="w-5 h-5 text-red-600 hover:text-red-800 transition-colors" />
+												<Trash2 class="w-5 h-5 text-red-500 hover:text-red-900 transition-colors" />
 											</button>
 										</form>
 									</div>
@@ -594,7 +594,6 @@
 
 	.btn-login {
 		width: 10rem;
-		height: 2.5vh;
 		border: none;
 		border-radius: 25px;
 		font-family: 'Kode Mono', monospace;

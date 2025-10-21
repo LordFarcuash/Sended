@@ -344,7 +344,6 @@
 
 	.btn-login {
 		width: 10rem;
-		height: 2.5vh;
 		border: none;
 		border-radius: 25px;
 		font-family: 'Kode Mono', monospace;
