@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
-	import { Building2, Key, Ticket, Clock, BadgeCheck, BadgeX, Trash2 } from '@lucide/svelte';
+	import { Building2, Key, Ticket, BadgeCheck, BadgeX, Trash2 } from '@lucide/svelte';
 	import type { PageData } from './$types';
 	import { enhance } from '$app/forms';
 
@@ -21,13 +21,6 @@
 		{ id: 'departments', label: 'Departments', icon: Building2 },
 		{ id: 'credentials', label: 'Credentials', icon: Key },
 		{ id: 'tickets', label: 'Tickets', icon: Ticket }
-	];
-
-	const credentials = [
-		{ id: 1, service: 'Database Server', username: 'admin', lastUsed: '2 hours ago' },
-		{ id: 2, service: 'Email Server', username: 'support@company.com', lastUsed: '1 day ago' },
-		{ id: 3, service: 'Cloud Storage', username: 'cloud-admin', lastUsed: '3 hours ago' },
-		{ id: 4, service: 'API Gateway', username: 'api-key-001', lastUsed: '30 minutes ago' }
 	];
 
 	function getStatusColor(status: string) {

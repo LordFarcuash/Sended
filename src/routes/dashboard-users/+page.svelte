@@ -1,82 +1,40 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
-	import { Building2, Ticket, Clock, CheckCircle2, AlertCircle } from '@lucide/svelte';
+	import { Building2, Ticket, BadgeCheck, BadgeX } from '@lucide/svelte';
+	import type { PageData } from './$types';
+	import { enhance } from '$app/forms';
+
+	let { data }: { data: PageData } = $props();
+
+	let tickets = $derived(data.tickets);
+	let departments = $derived(data.departments);
 
 	let activeSection = $state('tickets');
 	let mobileMenuOpen = $state(false);
 
-	const sections = [
-		{ id: 'tickets', label: 'Assigned Tickets', icon: Ticket },
-		{ id: 'createticket', label: 'Create Ticket', icon: Ticket }
-	];
+	let showTicketModal = $state(false);
+	let TicketForm = $state({ title: '', department: '', description: '', priority: '' });
 
-	// Sample data
+	const sections = [{ id: 'tickets', label: 'Assigned Tickets', icon: Ticket }];
 
-	const tickets = [
-		{
-			id: 1001,
-			title: 'Login issues on mobile app',
-			status: 'open',
-			priority: 'high',
-			department: 'IT Support',
-			created: '2 hours ago'
-		},
-		{
-			id: 1002,
-			title: 'Request for new feature',
-			status: 'in-progress',
-			priority: 'medium',
-			department: 'Development',
-			created: '1 day ago'
-		},
-		{
-			id: 1003,
-			title: 'Payment processing error',
-			status: 'open',
-			priority: 'high',
-			department: 'Sales',
-			created: '30 minutes ago'
-		},
-		{
-			id: 1004,
-			title: 'Account verification needed',
-			status: 'resolved',
-			priority: 'low',
-			department: 'Customer Service',
-			created: '3 days ago'
-		},
-		{
-			id: 1005,
-			title: 'Email delivery failure',
-			status: 'open',
-			priority: 'medium',
-			department: 'IT Support',
-			created: '5 hours ago'
-		}
-	];
-
-	// @ts-ignore
-	function getStatusColor(status) {
+	function getStatusColor(status: string) {
 		switch (status) {
-			case 'open':
-				return 'text-red-600 dark:text-red-400';
-			case 'in-progress':
-				return 'text-blue-600 dark:text-blue-400';
-			case 'resolved':
+			case 'Pending':
+				return 'text-yellow-600 dark:text-blue-400';
+			case 'Solved':
 				return 'text-green-600 dark:text-green-400';
 			default:
 				return 'text-slate-600 dark:text-slate-400';
 		}
 	}
 
-	// @ts-ignore
-	function getPriorityBadge(priority) {
+	function getPriorityBadge(priority: string) {
 		switch (priority) {
-			case 'high':
+			case 'High':
 				return 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-300';
-			case 'medium':
+			case 'Medium':
 				return 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-300';
-			case 'low':
+			case 'Low':
 				return 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300';
 			default:
 				return 'bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300';
@@ -98,6 +56,15 @@
 			// Redirigir de todos modos
 			goto('/');
 		}
+	}
+
+	function openTicketModal() {
+		showTicketModal = true;
+	}
+
+	function closeTicketModal() {
+		showTicketModal = false;
+		TicketForm = { title: '', department: '', description: '', priority: '' };
 	}
 </script>
 
@@ -154,9 +121,10 @@
 		{#if activeSection === 'tickets'}
 			<div class="space-y-6">
 				<div class="flex items-center justify-between">
-					<h2 class="text-3xl font-bold text-foreground">Tickets</h2>
+					<h2 class="text-3xl font-bold text-foreground">Department Tickets</h2>
 					<button
-						class="px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:opacity-90 transition-opacity"
+						onclick={openTicketModal}
+						class="px-4 py-2 bg-slate-300 text-black rounded-[15px] font-bold text-foreground text-[0.8rem] hover:bg-slate-400 transition-opacity shadow-lg"
 					>
 						Create Ticket
 					</button>
@@ -185,126 +153,21 @@
 											<Building2 class="w-4 h-4" />
 											{ticket.department}
 										</div>
-										<div class="flex items-center gap-2">
-											<Clock class="w-4 h-4" />
-											{ticket.created}
-										</div>
 									</div>
 								</div>
 								<div class="flex items-center gap-3">
 									<div class="flex items-center gap-2 {getStatusColor(ticket.status)}">
-										{#if ticket.status === 'resolved'}
-											<CheckCircle2 class="w-5 h-5" />
+										{#if ticket.status === 'Solved'}
+											<BadgeCheck class="w-5 h-5" />
 										{:else}
-											<AlertCircle class="w-5 h-5" />
+											<BadgeX class="w-5 h-5" />
 										{/if}
 										<span class="font-medium capitalize">{ticket.status}</span>
 									</div>
-									<button
-										class="px-4 py-2 text-sm text-primary hover:bg-primary/10 rounded-lg transition-colors"
-									>
-										View Details
-									</button>
 								</div>
 							</div>
 						</div>
 					{/each}
-				</div>
-			</div>
-		{/if}
-
-		<!-- Added Create Ticket form section -->
-		{#if activeSection === 'createticket'}
-			<div class="space-y-6">
-				<div class="flex items-center justify-between">
-					<h2 class="text-3xl font-bold text-foreground">Create New Ticket</h2>
-				</div>
-
-				<div class="bg-card border border-border rounded-xl p-8 shadow-lg">
-					<form class="space-y-6">
-						<!-- Ticket Title -->
-						<div class="space-y-2">
-							<label for="title" class="block text-sm font-semibold text-card-foreground">
-								Ticket Title <span class="text-red-500">*</span>
-							</label>
-							<input
-								type="text"
-								id="title"
-								name="title"
-								placeholder="Enter a brief description of the issue"
-								class="w-full px-4 py-3 bg-background border border-border rounded-lg text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
-							/>
-						</div>
-
-						<!-- Department and Priority Row -->
-						<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-							<!-- Department -->
-							<div class="space-y-2">
-								<label for="department" class="block text-sm font-semibold text-card-foreground">
-									Department <span class="text-red-500">*</span>
-								</label>
-								<select
-									id="department"
-									name="department"
-									class="w-full px-4 py-3 bg-background border border-border rounded-lg text-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
-								>
-									<option value="">Select a department</option>
-									<option value="it-support">IT Support</option>
-									<option value="development">Development</option>
-									<option value="sales">Sales</option>
-									<option value="customer-service">Customer Service</option>
-									<option value="hr">Human Resources</option>
-									<option value="finance">Finance</option>
-								</select>
-							</div>
-
-							<!-- Priority -->
-							<div class="space-y-2">
-								<label for="priority" class="block text-sm font-semibold text-card-foreground">
-									Priority <span class="text-red-500">*</span>
-								</label>
-								<select
-									id="priority"
-									name="priority"
-									class="w-full px-4 py-3 bg-background border border-border rounded-lg text-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
-								>
-									<option value="">Select priority level</option>
-									<option value="low">Low</option>
-									<option value="medium">Medium</option>
-									<option value="high">High</option>
-								</select>
-							</div>
-						</div>
-
-						<!-- Description -->
-						<div class="space-y-2">
-							<label for="description" class="block text-sm font-semibold text-card-foreground">
-								Description <span class="text-red-500">*</span>
-							</label>
-							<textarea
-								id="description"
-								name="description"
-								rows="6"
-								placeholder="Provide detailed information about the issue or request..."
-								class="w-full px-4 py-3 bg-background border border-border rounded-lg text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all resize-none"
-							></textarea>
-						</div>
-
-						<!-- Form Actions -->
-						<div class="flex flex-col sm:flex-row gap-4 pt-4">
-							<button
-								type="submit"
-								class="flex-1 px-6 py-3 bg-primary text-primary-foreground rounded-lg font-semibold hover:opacity-90 transition-opacity shadow-md hover:shadow-lg"
-							>
-								Submit Ticket
-							</button>
-						</div>
-
-						<!-- Required Fields Note -->
-						<p class="text-xs text-muted-foreground text-center pt-2">
-							<span class="text-red-500">*</span> Required fields
-						</p>
-					</form>
 				</div>
 			</div>
 		{/if}
@@ -329,6 +192,144 @@
 		</div>
 	</nav>
 </div>
+
+{#if showTicketModal}
+	<div
+		class="fixed inset-0 bg-slate-200/55 backdrop-blur-sm flex items-center justify-center z-50 p-4"
+		onclick={closeTicketModal}
+		onkeydown={(e) => {
+			if (e.key === 'Enter' || e.key === ' ' || e.key === 'Spacebar') {
+				closeTicketModal();
+			}
+		}}
+		role="button"
+		aria-label="Close modal"
+		tabindex="0"
+	>
+		<div
+			class="bg-card border border-border rounded-xl shadow-2xl max-w-md w-full p-6"
+			onclick={(e) => e.stopPropagation()}
+			onkeydown={(e) => e.stopPropagation()}
+			role="dialog"
+			aria-modal="true"
+			tabindex="-1"
+		>
+			<div class="flex items-center justify-between mb-6">
+				<h3 class="text-2xl font-bold text-foreground">Create Ticket</h3>
+				<button
+					onclick={closeTicketModal}
+					aria-label="Close dialog"
+					class="text-muted-foreground hover:text-foreground transition-colors"
+				>
+					<svg
+						xmlns="http://www.w3.org/2000/svg"
+						class="h-6 w-6"
+						fill="none"
+						viewBox="0 0 24 24"
+						stroke="currentColor"
+					>
+						<path
+							stroke-linecap="round"
+							stroke-linejoin="round"
+							stroke-width="2"
+							d="M6 18L18 6M6 6l12 12"
+						/>
+					</svg>
+				</button>
+			</div>
+
+			<form
+				onsubmit={(e) => {
+					e.preventDefault();
+				}}
+				class="space-y-4"
+				method="POST"
+				action="?/createTicket"
+				use:enhance
+			>
+				<div>
+					<label for="ticket-title" class="block text-sm font-medium text-foreground mb-2">
+						Ticket Title
+					</label>
+					<input
+						id="ticket-title"
+						type="text"
+						name="title"
+						bind:value={TicketForm.title}
+						required
+						class="w-full px-4 py-2 bg-background border border-border rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all text-foreground"
+						placeholder="Enter department name"
+					/>
+				</div>
+
+				<div>
+					<label for="ticket-department" class="block text-sm font-medium text-foreground mb-2">
+						Select Department
+					</label>
+					<select
+						id="ticket-department"
+						name="department"
+						bind:value={TicketForm.department}
+						required
+						class="w-full px-4 py-2 bg-background border border-border rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all text-foreground"
+					>
+						<option value="" disabled selected>Select a department</option>
+						{#each departments as dept}
+							<option value={dept.name}>{dept.name}</option>
+						{/each}
+					</select>
+				</div>
+
+				<div>
+					<label for="dept-password" class="block text-sm font-medium text-foreground mb-2">
+						Description
+					</label>
+					<textarea
+						id="ticket-description"
+						name="description"
+						bind:value={TicketForm.description}
+						required
+						class="w-full px-4 py-2 bg-background border border-border rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all text-foreground"
+						placeholder="Enter ticket description"
+					></textarea>
+				</div>
+				<div>
+					<label for="dept-password" class="block text-sm font-medium text-foreground mb-2">
+						Priority
+					</label>
+					<select
+						id="ticket-priority"
+						name="priority"
+						bind:value={TicketForm.priority}
+						required
+						class="w-full px-4 py-2 bg-background border border-border rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all text-foreground"
+					>
+						<option value="" disabled selected>Select priority</option>
+						<option value="Low">Low</option>
+						<option value="Medium">Medium</option>
+						<option value="High">High</option>
+					</select>
+				</div>
+
+				<div class="flex gap-3 pt-4">
+					<button
+						type="button"
+						onclick={closeTicketModal}
+						class="flex-1 px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors font-medium shadow-lg"
+					>
+						Cancel
+					</button>
+					<button
+						type="submit"
+						class="flex-1 px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors font-medium shadow-lg"
+					>
+						Create
+					</button>
+				</div>
+			</form>
+		</div>
+	</div>
+{/if}
 
 <style>
 	.header {
