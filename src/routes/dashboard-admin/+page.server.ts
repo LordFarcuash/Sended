@@ -145,6 +145,20 @@ export const actions: Actions = {
       console.error('Error al crear ticket:', error);
       return fail(500, { error: 'Error al crear el ticket' });
     }
-  }
+  },
+  deleteTicket: async ({ request }) => {
+    const formData = await request.formData();
+    const TicketId = formData.get('TicketId') as string;
+    if (!TicketId) {
+      return fail(400, { error: 'ID de departamento inválido' });
+    }
+    try {
+      await query('DELETE FROM tickets WHERE id = ?', [TicketId]);
+      return { success: true, message: 'Ticket eliminado exitosamente' }
+    } catch (error) {
+      console.error('Error al eliminar Ticket:', error);
+      return fail(500, { error: 'Error al eliminar el Ticket' });
+    }
+  },
 };
 

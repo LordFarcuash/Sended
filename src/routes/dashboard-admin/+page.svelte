@@ -277,11 +277,21 @@
 										{/if}
 										<span class="font-medium capitalize">{ticket.status}</span>
 									</div>
-									<button
-										class="px-4 py-2 text-sm text-primary hover:bg-primary/10 rounded-lg transition-colors"
+									<div
+										class="flex items-center bg-gray-500/50 rounded-sm items-center pt-2 pl-2 pr-2 pb-1"
 									>
-										View Details
-									</button>
+										<form method="post" action="?/deleteTicket" use:enhance>
+											<input type="hidden" name="TicketId" value={ticket.id} class="hidden" />
+											<button
+												type="submit"
+												name="deleteTicket"
+												value="1"
+												aria-label="Eliminar Ticket"
+											>
+												<Trash2 class="w-5 h-5 text-red-600 hover:text-red-800 transition-colors" />
+											</button>
+										</form>
+									</div>
 								</div>
 							</div>
 						</div>
