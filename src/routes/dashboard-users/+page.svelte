@@ -7,7 +7,7 @@
 
 	const sections = [
 		{ id: 'tickets', label: 'Assigned Tickets', icon: Ticket },
-		{ id: 'Assigned', label: 'Create Ticket', icon: Ticket }
+		{ id: 'createticket', label: 'Create Ticket', icon: Ticket }
 	];
 
 	// Sample data
@@ -214,7 +214,7 @@
 		{/if}
 
 		<!-- Added Create Ticket form section -->
-		{#if activeSection === 'Assigned'}
+		{#if activeSection === 'createticket'}
 			<div class="space-y-6">
 				<div class="flex items-center justify-between">
 					<h2 class="text-3xl font-bold text-foreground">Create New Ticket</h2>

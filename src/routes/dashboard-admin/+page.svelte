@@ -14,6 +14,9 @@
 	let showDepartmentModal = $state(false);
 	let departmentForm = $state({ name: '', username: '', password: '' });
 
+	let showTicketModal = $state(false);
+	let TicketForm = $state({ title: '', department: '', description: '', priority: '' });
+
 	const sections = [
 		{ id: 'departments', label: 'Departments', icon: Building2 },
 		{ id: 'credentials', label: 'Credentials', icon: Key },
@@ -76,6 +79,15 @@
 	function closeDepartmentModal() {
 		showDepartmentModal = false;
 		departmentForm = { name: '', username: '', password: '' };
+	}
+
+	function openTicketModal() {
+		showTicketModal = true;
+	}
+
+	function closeTicketModal() {
+		showTicketModal = false;
+		TicketForm = { title: '', department: '', description: '', priority: '' };
 	}
 </script>
 
@@ -186,31 +198,29 @@
 									<th class="px-6 py-4 text-left text-sm font-semibold text-foreground">Service</th>
 									<th class="px-6 py-4 text-left text-sm font-semibold text-foreground">Username</th
 									>
-									<th class="px-6 py-4 text-left text-sm font-semibold text-foreground"
-										>Last Used</th
+									<th class="px-6 py-4 text-left text-sm font-semibold text-foreground">Password</th
 									>
 									<th class="px-6 py-4 text-right text-sm font-semibold text-foreground">Actions</th
 									>
 								</tr>
 							</thead>
 							<tbody class="divide-y divide-border">
-								{#each credentials as cred}
+								{#each departments as dept}
 									<tr class="hover:bg-muted/50 transition-colors">
 										<td class="px-6 py-4">
 											<div class="flex items-center gap-3">
 												<div class="p-2 bg-primary/10 rounded-lg">
 													<Key class="w-4 h-4 text-primary" />
 												</div>
-												<span class="font-medium text-card-foreground">{cred.service}</span>
+												<span class="font-medium text-card-foreground">{dept.name}</span>
 											</div>
 										</td>
 										<td class="px-6 py-4 text-muted-foreground font-mono text-sm"
-											>{cred.username}</td
+											>{dept.username}</td
 										>
 										<td class="px-6 py-4">
 											<div class="flex items-center gap-2 text-muted-foreground text-sm">
-												<Clock class="w-4 h-4" />
-												{cred.lastUsed}
+												{dept.password}
 											</div>
 										</td>
 										<td class="px-6 py-4 text-right">
@@ -234,6 +244,7 @@
 				<div class="flex items-center justify-between">
 					<h2 class="text-3xl font-bold text-foreground">Tickets</h2>
 					<button
+						onclick={openTicketModal}
 						class="px-4 py-2 bg-slate-300 text-black rounded-[15px] font-bold text-foreground text-[0.8rem] hover:bg-slate-400 transition-opacity shadow-lg"
 					>
 						Create Ticket
@@ -412,6 +423,143 @@
 					<button
 						type="button"
 						onclick={closeDepartmentModal}
+						class="flex-1 px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors font-medium shadow-lg"
+					>
+						Cancel
+					</button>
+					<button
+						type="submit"
+						class="flex-1 px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors font-medium shadow-lg"
+					>
+						Create
+					</button>
+				</div>
+			</form>
+		</div>
+	</div>
+{/if}
+{#if showTicketModal}
+	<div
+		class="fixed inset-0 bg-slate-200/55 backdrop-blur-sm flex items-center justify-center z-50 p-4"
+		onclick={closeTicketModal}
+		onkeydown={(e) => {
+			if (e.key === 'Enter' || e.key === ' ' || e.key === 'Spacebar') {
+				closeTicketModal();
+			}
+		}}
+		role="button"
+		aria-label="Close modal"
+		tabindex="0"
+	>
+		<div
+			class="bg-card border border-border rounded-xl shadow-2xl max-w-md w-full p-6"
+			onclick={(e) => e.stopPropagation()}
+			onkeydown={(e) => e.stopPropagation()}
+			role="dialog"
+			aria-modal="true"
+			tabindex="-1"
+		>
+			<div class="flex items-center justify-between mb-6">
+				<h3 class="text-2xl font-bold text-foreground">Create Ticket</h3>
+				<button
+					onclick={closeTicketModal}
+					aria-label="Close dialog"
+					class="text-muted-foreground hover:text-foreground transition-colors"
+				>
+					<svg
+						xmlns="http://www.w3.org/2000/svg"
+						class="h-6 w-6"
+						fill="none"
+						viewBox="0 0 24 24"
+						stroke="currentColor"
+					>
+						<path
+							stroke-linecap="round"
+							stroke-linejoin="round"
+							stroke-width="2"
+							d="M6 18L18 6M6 6l12 12"
+						/>
+					</svg>
+				</button>
+			</div>
+
+			<form
+				onsubmit={(e) => {
+					e.preventDefault();
+				}}
+				class="space-y-4"
+				method="POST"
+				action="?/createTicket"
+				use:enhance
+			>
+				<div>
+					<label for="ticket-title" class="block text-sm font-medium text-foreground mb-2">
+						Ticket Title
+					</label>
+					<input
+						id="ticket-title"
+						type="text"
+						name="title"
+						bind:value={TicketForm.title}
+						required
+						class="w-full px-4 py-2 bg-background border border-border rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all text-foreground"
+						placeholder="Enter department name"
+					/>
+				</div>
+
+				<div>
+					<label for="ticket-department" class="block text-sm font-medium text-foreground mb-2">
+						Select Department
+					</label>
+					<select
+						id="ticket-department"
+						name="department"
+						bind:value={TicketForm.department}
+						required
+						class="w-full px-4 py-2 bg-background border border-border rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all text-foreground"
+					>
+						<option value="" disabled selected>Select a department</option>
+						{#each departments as dept}
+							<option value={dept.name}>{dept.name}</option>
+						{/each}
+					</select>
+				</div>
+
+				<div>
+					<label for="dept-password" class="block text-sm font-medium text-foreground mb-2">
+						Description
+					</label>
+					<textarea
+						id="ticket-description"
+						name="description"
+						bind:value={TicketForm.description}
+						required
+						class="w-full px-4 py-2 bg-background border border-border rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all text-foreground"
+						placeholder="Enter ticket description"
+					></textarea>
+				</div>
+				<div>
+					<label for="dept-password" class="block text-sm font-medium text-foreground mb-2">
+						Priority
+					</label>
+					<select
+						id="ticket-priority"
+						name="priority"
+						bind:value={TicketForm.priority}
+						required
+						class="w-full px-4 py-2 bg-background border border-border rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all text-foreground"
+					>
+						<option value="" disabled selected>Select priority</option>
+						<option value="Low">Low</option>
+						<option value="Medium">Medium</option>
+						<option value="High">High</option>
+					</select>
+				</div>
+
+				<div class="flex gap-3 pt-4">
+					<button
+						type="button"
+						onclick={closeTicketModal}
 						class="flex-1 px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors font-medium shadow-lg"
 					>
 						Cancel

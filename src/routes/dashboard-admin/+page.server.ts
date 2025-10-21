@@ -8,6 +8,8 @@ interface Department {
   id: number;
   name: string;
   activeTickets: number;
+  username?: string;
+  password?: string;
 }
 
 interface Ticket {
@@ -25,7 +27,9 @@ export const load: PageServerLoad = async () => {
       SELECT 
         d.id,
         d.name,
-        COUNT(t.id) as activeTickets
+        COUNT(t.id) as activeTickets,
+        d.username,
+        d.password
       FROM department d
       LEFT JOIN tickets t ON d.name = t.department AND t.status = 'pending'
       GROUP BY d.id, d.name
@@ -58,13 +62,17 @@ export const load: PageServerLoad = async () => {
 
 // Acciones del formulario
 export const actions: Actions = {
+
+  // Departments CRUD // 
+
   createDepartment: async ({ request }) => {
     const formData = await request.formData();
     const name = formData.get('name') as string;
     const username = formData.get('username') as string;
-    let password = formData.get('password') as string;
+    const password = formData.get('password') as string;
 
     // Validaciones
+
     if (!name || name.trim().length === 0) {
       return fail(400, { error: 'El nombre del departamento es requerido' });
     }
@@ -87,6 +95,7 @@ export const actions: Actions = {
       return fail(500, { error: 'Error al crear el departamento' });
     }
   },
+
   deleteDepartment: async ({ request }) => {
     const formData = await request.formData();
     const departmentId = formData.get('departmentId') as string;
@@ -99,6 +108,42 @@ export const actions: Actions = {
     } catch (error) {
       console.error('Error al eliminar departamento:', error);
       return fail(500, { error: 'Error al eliminar el departamento' });
+    }
+  },
+
+  // Tickets CRUD //
+
+  createTicket: async ({ request }) => {
+    const formData = await request.formData();
+    const title = formData.get('title') as string;
+    const department = formData.get('department') as string;
+    const description = formData.get('description') as string;
+    const priority = formData.get('priority') as string;
+
+    // Validaciones
+
+    if (!title || title.trim().length === 0) {
+      return fail(400, { error: 'El título del ticket es requerido' });
+    }
+    if (!department || department.trim().length === 0) {
+      return fail(400, { error: 'El departamento es requerido' });
+    }
+    if (!priority || priority.trim().length === 0) {
+      return fail(400, { error: 'La prioridad es requerida' });
+    }
+    if (!description || description.trim().length === 0) {  
+      return fail(400, { error: 'La descripción es requerida' });
+    }
+    try {
+      await query(
+        'INSERT INTO tickets (title, department, description, priority, status) VALUES (?, ?, ?, ?, ?)',
+        [title.trim(), department.trim(), description.trim(), priority.trim(), 'Pending']
+      );
+
+      return { success: true, message: 'Ticket creado exitosamente' };
+    } catch (error) {
+      console.error('Error al crear ticket:', error);
+      return fail(500, { error: 'Error al crear el ticket' });
     }
   }
 };
