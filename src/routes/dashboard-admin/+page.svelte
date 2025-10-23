@@ -384,9 +384,7 @@
 										{/if}
 										<span class="font-medium capitalize">{ticket.status}</span>
 									</div>
-									<div
-										class="flex items-center bg-slate-300 rounded-sm items-center pt-2 pl-2 pr-2 pb-1"
-									>
+									<div class="flex items-center rounded-sm items-center">
 										<form method="post" action="?/deleteTicket" use:enhance>
 											<input type="hidden" name="TicketId" value={ticket.id} class="hidden" />
 											<button
@@ -394,6 +392,7 @@
 												name="deleteTicket"
 												value="1"
 												aria-label="Eliminar Ticket"
+												class="w-[40px] h-[40px] flex items-center justify-center bg-gray-300 rounded-md hover:bg-slate-500/50 transition-colors"
 											>
 												<Trash2 class="w-5 h-5 text-red-500 hover:text-red-900 transition-colors" />
 											</button>
