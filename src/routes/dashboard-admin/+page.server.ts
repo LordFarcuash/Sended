@@ -111,6 +111,40 @@ export const actions: Actions = {
     }
   },
 
+  updateDepartment: async ({ request }) => {
+    const formData = await request.formData();
+    const departmentId = formData.get('departmentId') as string;
+    const name = formData.get('name') as string;
+    const username = formData.get('username') as string;
+    const password = formData.get('password') as string;
+    if (!departmentId) {
+      return fail(400, { error: 'ID de departamento inválido' });
+    }
+    let hashedPassword = null;
+    if (password && password.trim().length > 0) {
+      const saltRounds = 10;
+      hashedPassword = await bcrypt.hash(password.trim(), saltRounds);
+    }
+    try {
+      if (hashedPassword) {
+        await query(
+          'UPDATE department SET name = ?, username = ?, password = ? WHERE id = ?',
+          [name.trim(), username || null, hashedPassword, departmentId]
+        );
+      }
+      else {
+        await query(
+          'UPDATE department SET name = ?, username = ? WHERE id = ?',
+          [name.trim(), username || null, departmentId]
+        );
+      }
+      return { success: true, message: 'Departamento actualizado exitosamente' }
+    } catch (error) {
+      console.error('Error al actualizar departamento:', error);
+      return fail(500, { error: 'Error al actualizar el departamento' });
+    }
+  },
+
   // Tickets CRUD //
 
   createTicket: async ({ request }) => {

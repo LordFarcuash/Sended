@@ -17,6 +17,13 @@
 	let showTicketModal = $state(false);
 	let TicketForm = $state({ title: '', department: '', description: '', priority: '' });
 
+	let editingId: number | null = $state(null);
+	let editForm = $state({
+		name: '',
+		username: '',
+		password: ''
+	});
+
 	const sections = [
 		{ id: 'departments', label: 'Departments', icon: Building2 },
 		{ id: 'credentials', label: 'Credentials', icon: Key },
@@ -59,7 +66,6 @@
 			}
 		} catch (error) {
 			console.error('Error al cerrar sesión:', error);
-			// Redirigir de todos modos
 			goto('/');
 		}
 	}
@@ -80,6 +86,24 @@
 	function closeTicketModal() {
 		showTicketModal = false;
 		TicketForm = { title: '', department: '', description: '', priority: '' };
+	}
+
+	function startEdit(dept: (typeof departments)[0]) {
+		editingId = dept.id;
+		editForm = {
+			name: dept.name,
+			username: dept.username || '',
+			password: ''
+		};
+	}
+
+	function cancelEdit() {
+		editingId = null;
+		editForm = {
+			name: '',
+			username: '',
+			password: ''
+		};
 	}
 </script>
 
@@ -200,27 +224,110 @@
 								{#each departments as dept}
 									<tr class="hover:bg-muted/50 transition-colors">
 										<td class="px-6 py-4">
-											<div class="flex items-center gap-3">
-												<div class="p-2 bg-primary/10 rounded-lg">
-													<Key class="w-4 h-4 text-primary" />
+											{#if editingId === dept.id}
+												<div class="space-y-1">
+													<label for="name-{dept.id}" class="text-xs text-muted-foreground">
+														Service Name
+													</label>
+													<input
+														id="name-{dept.id}"
+														type="text"
+														bind:value={editForm.name}
+														class="w-full px-3 py-2 bg-background border border-border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary"
+														placeholder={dept.name}
+													/>
 												</div>
-												<span class="font-medium text-card-foreground">{dept.name}</span>
-											</div>
+											{:else}
+												<div class="flex items-center gap-3">
+													<div class="p-2 bg-primary/10 rounded-lg">
+														<Key class="w-4 h-4 text-primary" />
+													</div>
+													<span class="font-medium text-card-foreground">{dept.name}</span>
+												</div>
+											{/if}
 										</td>
-										<td class="px-6 py-4 text-muted-foreground font-mono text-sm"
-											>{dept.username}</td
-										>
 										<td class="px-6 py-4">
-											<div class="flex items-center gap-2 text-muted-foreground text-sm">
-												{dept.password}
-											</div>
+											{#if editingId === dept.id}
+												<div class="space-y-1">
+													<label for="username-{dept.id}" class="text-xs text-muted-foreground">
+														Username
+													</label>
+													<input
+														id="username-{dept.id}"
+														type="text"
+														bind:value={editForm.username}
+														class="w-full px-3 py-2 bg-background border border-border rounded-lg text-sm font-mono focus:outline-none focus:ring-2 focus:ring-primary"
+														placeholder={dept.username || 'Enter username'}
+													/>
+												</div>
+											{:else}
+												<span class="text-muted-foreground font-mono text-sm"
+													>{dept.username || '-'}</span
+												>
+											{/if}
+										</td>
+										<td class="px-6 py-4">
+											{#if editingId === dept.id}
+												<div class="space-y-1">
+													<label for="password-{dept.id}" class="text-xs text-muted-foreground">
+														New Password (leave blank to keep current)
+													</label>
+													<input
+														id="password-{dept.id}"
+														type="password"
+														bind:value={editForm.password}
+														class="w-full px-3 py-2 bg-background border border-border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary"
+														placeholder="••••••••"
+													/>
+												</div>
+											{:else}
+												<div class="flex items-center gap-2 text-muted-foreground text-sm">
+													{dept.password || '-'}
+												</div>
+											{/if}
 										</td>
 										<td class="px-6 py-4 text-right">
-											<button
-												class="px-3 py-1 text-sm text-primary hover:bg-primary/10 rounded-lg transition-colors"
-											>
-												View
-											</button>
+											{#if editingId === dept.id}
+												<form
+													method="POST"
+													action="?/updateDepartment"
+													use:enhance={() => {
+														return async ({ result, update }) => {
+															if (result.type === 'success') {
+																cancelEdit();
+															}
+															await update();
+														};
+													}}
+													class="flex items-center justify-end gap-2"
+												>
+													<input type="hidden" name="departmentId" value={dept.id} />
+													<input type="hidden" name="name" value={editForm.name} />
+													<input type="hidden" name="username" value={editForm.username} />
+													<input type="hidden" name="password" value={editForm.password} />
+
+													<button
+														type="button"
+														onclick={cancelEdit}
+														class="px-3 py-1 text-sm text-muted-foreground bg-red-400 hover:bg-muted rounded-lg transition-colors font-medium"
+													>
+														Cancel
+													</button>
+													<button
+														type="submit"
+														class="px-3 py-1 text-sm text-white bg-green-400 bg-primary hover:bg-primary/90 rounded-lg transition-colors font-medium"
+													>
+														Save
+													</button>
+												</form>
+											{:else}
+												<button
+													onclick={() => startEdit(dept)}
+													class="px-3 py-1 text-sm text-primary bg-slate-300 w-[50px] hover:bg-primary rounded-lg transition-colors font-medium"
+												>
+													Edit
+												</button>
+											{/if}
 										</td>
 									</tr>
 								{/each}
