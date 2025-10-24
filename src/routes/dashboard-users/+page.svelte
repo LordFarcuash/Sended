@@ -3,11 +3,11 @@
 	import { Building2, Ticket, BadgeCheck, BadgeX } from '@lucide/svelte';
 	import type { PageData } from './$types';
 	import { enhance } from '$app/forms';
-
 	let { data }: { data: PageData } = $props();
 
 	let tickets = $derived(data.tickets);
 	let departments = $derived(data.departments);
+	let currentDepartment = $derived(data.currentDepartment);
 
 	let activeSection = $state('tickets');
 	let mobileMenuOpen = $state(false);
@@ -73,7 +73,7 @@
 		<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 			<div class="flex items-center justify-between h-16">
 				<div class="flex items-center gap-3">
-					<h1 class="text-xl font-bold tracking-tight">SendedMaster Worker Panel</h1>
+					<h1 class="text-xl font-bold tracking-tight">Sended Worker Panel</h1>
 					<button onclick={logout} class="btn-login">Logout</button>
 				</div>
 				<div class="hidden md:flex items-center gap-2">
@@ -121,7 +121,7 @@
 		{#if activeSection === 'tickets'}
 			<div class="space-y-6">
 				<div class="flex items-center justify-between">
-					<h2 class="text-3xl font-bold text-foreground">Department Tickets</h2>
+					<h2 class="text-3xl font-bold text-foreground">{currentDepartment} - Tickets</h2>
 					<button
 						onclick={openTicketModal}
 						class="px-4 py-2 bg-slate-300 text-black rounded-[15px] font-bold text-foreground text-[0.8rem] hover:bg-slate-400 transition-opacity shadow-lg"
@@ -135,34 +135,56 @@
 						<div
 							class="bg-card border border-border rounded-xl p-6 hover:shadow-lg transition-shadow"
 						>
-							<div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
-								<div class="flex-1">
-									<div class="flex items-center gap-3 mb-2">
-										<span class="text-sm font-mono text-muted-foreground">#{ticket.id}</span>
-										<span
-											class="px-2 py-1 text-xs font-medium rounded-full {getPriorityBadge(
-												ticket.priority
-											)}"
-										>
-											{ticket.priority}
-										</span>
+							<div class="flex flex-col gap-4">
+								<div class="flex flex-col md:flex-row md:items-start justify-between gap-4">
+									<div class="flex-1">
+										<div class="flex items-center gap-3 mb-2">
+											<span class="text-sm font-mono text-muted-foreground">#{ticket.id}</span>
+											<span
+												class="px-2 py-1 text-xs font-medium rounded-full {getPriorityBadge(
+													ticket.priority
+												)}"
+											>
+												{ticket.priority}
+											</span>
+										</div>
+										<h3 class="text-lg font-semibold text-card-foreground mb-2">{ticket.title}</h3>
+										<div class="flex flex-wrap items-center gap-4 text-sm text-muted-foreground">
+											<div class="flex items-center gap-2">
+												<Building2 class="w-4 h-4" />
+												{ticket.department}
+											</div>
+										</div>
 									</div>
-									<h3 class="text-lg font-semibold text-card-foreground mb-2">{ticket.title}</h3>
-									<div class="flex flex-wrap items-center gap-4 text-sm text-muted-foreground">
+
+									<div class="flex md:flex-col items-end gap-3">
+										<div class="flex items-center gap-2 {getStatusColor(ticket.status)}">
+											{#if ticket.status === 'Solved'}
+												<BadgeCheck class="w-5 h-5" />
+											{:else}
+												<BadgeX class="w-5 h-5" />
+											{/if}
+											<span class="font-medium capitalize">{ticket.status}</span>
+										</div>
 										<div class="flex items-center gap-2">
-											<Building2 class="w-4 h-4" />
-											{ticket.department}
+											<form method="POST" action="?/closeTicket">
+												<input type="hidden" name="TicketId" value={ticket.id} />
+												<button
+													type="submit"
+													class="px-3 py-1 bg-primary bg-slate-400/50 hover:bg-slate-500/40 text-primary-foreground rounded-lg transition-colors text-sm font-medium shadow-lg"
+												>
+													Close Ticket
+												</button>
+											</form>
 										</div>
 									</div>
 								</div>
-								<div class="flex items-center gap-3">
-									<div class="flex items-center gap-2 {getStatusColor(ticket.status)}">
-										{#if ticket.status === 'Solved'}
-											<BadgeCheck class="w-5 h-5" />
-										{:else}
-											<BadgeX class="w-5 h-5" />
-										{/if}
-										<span class="font-medium capitalize">{ticket.status}</span>
+								<div class="border-t border-border pt-3">
+									<p class="text-sm font-medium text-foreground mb-2">Description:</p>
+									<div
+										class="max-h-32 overflow-y-auto bg-background/50 rounded-lg p-3 text-sm text-muted-foreground scrollbar-thin scrollbar-thumb-border scrollbar-track-transparent"
+									>
+										{ticket.description}
 									</div>
 								</div>
 							</div>

@@ -29,7 +29,7 @@
 		<div class="card">
 			<div class="header-card">
 				<div class="brand font-selector">
-					<button on:click={() => handleTabChange('Home')}>SendedMaster</button>
+					<button on:click={() => handleTabChange('Home')}>Sended</button>
 				</div>
 
 				<button
@@ -82,7 +82,7 @@
 		</div>
 
 		<div class="footer">
-			<p>&copy; 2025 SendedMaster. Publicado bajo licencia MIT.</p>
+			<p>&copy; 2025 Sended. Publicado bajo licencia MIT.</p>
 		</div>
 	</div>
 </div>

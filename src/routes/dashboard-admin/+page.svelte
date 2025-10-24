@@ -112,7 +112,7 @@
 		<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 			<div class="flex items-center justify-between h-16">
 				<div class="flex items-center gap-3">
-					<h1 class="text-xl font-bold tracking-tight">SendedMaster Admin Panel</h1>
+					<h1 class="text-xl font-bold tracking-tight">Sended Admin Panel</h1>
 					<button onclick={logout} class="btn-login shadow-lg">Logout</button>
 				</div>
 				<div class="hidden md:flex items-center gap-2">
@@ -392,12 +392,20 @@
 												name="deleteTicket"
 												value="1"
 												aria-label="Eliminar Ticket"
-												class="w-[40px] h-[40px] flex items-center justify-center bg-gray-300 rounded-md hover:bg-slate-500/50 transition-colors"
+												class="w-[40px] h-[40px] flex items-center justify-center bg-gray-300 rounded-md hover:bg-slate-500/50 transition-colors shadow-lg"
 											>
 												<Trash2 class="w-5 h-5 text-red-500 hover:text-red-900 transition-colors" />
 											</button>
 										</form>
 									</div>
+								</div>
+							</div>
+							<div class="border-t border-border pt-4 mt-4">
+								<p class="text-sm font-medium text-foreground mb-2">Description:</p>
+								<div
+									class="max-h-32 overflow-y-auto bg-background/50 rounded-lg p-3 text-sm text-muted-foreground scrollbar-thin scrollbar-thumb-border scrollbar-track-transparent"
+								>
+									{ticket.description}
 								</div>
 							</div>
 						</div>

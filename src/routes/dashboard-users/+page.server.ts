@@ -18,6 +18,7 @@ interface Ticket {
    title: string;
    department: string;
    status: string;
+   description: string;
 }
 
 export const load: PageServerLoad = async ({ parent }) => {
@@ -35,7 +36,6 @@ export const load: PageServerLoad = async ({ parent }) => {
           GROUP BY d.id, d.name
           ORDER BY activeTickets DESC, d.name ASC   
         `);
-    // Obtener datos del layout (donde se expone la session)
     const parentData = await parent();
     const session = parentData?.session as { role?: string; department?: string } | undefined;
     const department = session?.department;
@@ -43,41 +43,41 @@ export const load: PageServerLoad = async ({ parent }) => {
     let tickets: Ticket[] = [];
 
     if (!department || session?.role === 'admin') {
-      // Si no hay department en sesión o es admin, traer todos
       tickets = await query<Ticket[]>(`
         SELECT 
           id,
           priority,
           title,
           department,
-          status
+          status,
+          description
         FROM tickets
-        ORDER BY FIELD(priority, 'High', 'Medium', 'Low'), id DESC
+        ORDER BY FIELD(status, 'Pending', 'Solved'), FIELD(priority, 'High', 'Medium', 'Low'), id DESC
       `);
     } else {
-      // Filtrar por department de la sesión
       tickets = await query<Ticket[]>(
-        `SELECT id, priority, title, department, status FROM tickets WHERE department = ? ORDER BY FIELD(priority, 'High', 'Medium', 'Low'), id DESC`,
+        `SELECT id, priority, title, department, status, description FROM tickets WHERE department = ? ORDER BY FIELD(status, 'Pending', 'Solved'), FIELD(priority, 'High', 'Medium', 'Low'), id DESC`,
         [department]
       );
     }
 
     return {
-      tickets, departments
+      tickets, 
+      departments,
+      currentDepartment: department || 'All Departments'
     };
   } catch (error) {
     console.error('Error al cargar datos:', error);
     return {
       departments: [],
-      tickets: []
+      tickets: [],
+      currentDepartment: 'All Departments'
     };
   }
 };
 
-// Acciones del formulario
-export const actions: Actions = {
 
-  // Departments CRUD // 
+export const actions: Actions = {
 
   createDepartment: async ({ request }) => {
     const formData = await request.formData();
@@ -159,6 +159,20 @@ export const actions: Actions = {
       console.error('Error al crear ticket:', error);
       return fail(500, { error: 'Error al crear el ticket' });
     }
-  }
-};
+  },
 
+  closeTicket: async ({ request }) => {
+    const formData = await request.formData();
+    const ticketId = formData.get('TicketId') as string;
+    if (!ticketId) {
+      return fail(400, { error: 'ID de ticket inválido' });
+    }
+    try {
+      await query('UPDATE tickets SET status = ? WHERE id = ?', ['Solved', ticketId]);
+      return { success: true, message: 'Ticket cerrado exitosamente' }
+    } catch (error) {
+      console.error('Error al cerrar ticket:', error);
+      return fail(500, { error: 'Error al cerrar el ticket' });
+    }
+  },
+};

@@ -18,6 +18,7 @@ interface Ticket {
    title: string;
    department: string;
    status: string;
+   description: string;
 }
 
 export const load: PageServerLoad = async () => {
@@ -42,6 +43,7 @@ export const load: PageServerLoad = async () => {
         priority,
         title,
         department,
+        description,
         status
       FROM tickets
         ORDER BY FIELD(priority, 'High', 'Medium', 'Low'), id DESC
