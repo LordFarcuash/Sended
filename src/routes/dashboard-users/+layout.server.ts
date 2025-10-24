@@ -22,7 +22,6 @@ export const load: LayoutServerLoad = async ({ cookies }) => {
         };
     } catch (e) {
         // Malformed cookie -> clear and redirect
-        cookies.delete('session', { path: '/' });
         throw redirect(303, '/');
     }
 };
