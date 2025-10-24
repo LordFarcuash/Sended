@@ -42,7 +42,7 @@ JWT_SECRET=tu_secreto_jwt_aqui
 # Database Connection
 DATABASE_HOST=localhost
 DATABASE_USER=root
-DATABASE_PASSWORD=rootroot
+DATABASE_PASSWORD=root
 DATABASE_PORT=3306
 
 # Don't Change
