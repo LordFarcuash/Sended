@@ -1,6 +1,6 @@
 # Proyecto SvelteKit
 
-Aplicación web desarrollada con SvelteKit que utiliza MySQL como base de datos y autenticación JWT.
+Aplicación web para gestionar tickets desarrollada con SvelteKit que utiliza MySQL como base de datos y autenticación JWT.
 
 ## 📋 Requisitos Previos
 
