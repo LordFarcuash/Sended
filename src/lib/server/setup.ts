@@ -47,13 +47,12 @@ export async function setupDatabase() {
     await connection.query(`
       CREATE TABLE IF NOT EXISTS \`department\` (
         \`id\` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
-        \`name\` VARCHAR(50) NOT NULL COLLATE 'utf8mb4_uca1400_ai_ci',
-        \`username\` VARCHAR(50) NOT NULL COLLATE 'utf8mb4_uca1400_ai_ci',
-        \`password\` VARCHAR(200) NOT NULL COLLATE 'utf8mb4_uca1400_ai_ci',
+        \`name\` VARCHAR(50) NOT NULL,
+        \`username\` VARCHAR(50) NOT NULL,
+        \`password\` VARCHAR(200) NOT NULL,
         PRIMARY KEY (\`id\`) USING BTREE,
         INDEX \`name\` (\`name\`) USING BTREE
       )
-      COLLATE='utf8mb4_uca1400_ai_ci'
       ENGINE=InnoDB
       AUTO_INCREMENT=1
     `);
@@ -63,16 +62,15 @@ export async function setupDatabase() {
     await connection.query(`
       CREATE TABLE IF NOT EXISTS \`tickets\` (
         \`id\` INT(11) NOT NULL AUTO_INCREMENT,
-        \`title\` VARCHAR(50) NOT NULL COLLATE 'utf8mb4_uca1400_ai_ci',
-        \`department\` VARCHAR(50) NOT NULL COLLATE 'utf8mb4_uca1400_ai_ci',
-        \`description\` VARCHAR(9999) NOT NULL COLLATE 'utf8mb4_uca1400_ai_ci',
-        \`priority\` VARCHAR(10) NOT NULL COLLATE 'utf8mb4_uca1400_ai_ci',
-        \`status\` VARCHAR(20) NOT NULL DEFAULT 'Pending' COLLATE 'utf8mb4_uca1400_ai_ci',
+        \`title\` VARCHAR(50) NOT NULL,
+        \`department\` VARCHAR(50) NOT NULL,
+        \`description\` VARCHAR(9999) NOT NULL,
+        \`priority\` VARCHAR(10) NOT NULL,
+        \`status\` VARCHAR(20) NOT NULL DEFAULT 'Pending',
         PRIMARY KEY (\`id\`) USING BTREE,
         INDEX \`FK_Departments\` (\`department\`) USING BTREE,
         CONSTRAINT \`FK_Departments\` FOREIGN KEY (\`department\`) REFERENCES \`department\` (\`name\`) ON UPDATE NO ACTION ON DELETE CASCADE
       )
-      COLLATE='utf8mb4_uca1400_ai_ci'
       ENGINE=InnoDB
       AUTO_INCREMENT=1
     `);
