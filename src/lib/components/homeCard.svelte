@@ -55,7 +55,7 @@
 				/>
 			</svg>
 		</div>
-		<h3 class="card-title">Fácil de Usar</h3>
+		<h3 class="card-title">Easy to use</h3>
 		<p class="card-description">
 			Optimized Interface, Intuitive for desktop and mobile. Your Experience is our priority on any
 			device.

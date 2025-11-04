@@ -66,6 +66,27 @@
 		showTicketModal = false;
 		TicketForm = { title: '', department: '', description: '', priority: '' };
 	}
+
+	function downloadPDF(base64Data: string, ticketId: number) {
+		
+		const byteCharacters = atob(base64Data);
+		const byteNumbers = new Array(byteCharacters.length);
+		for (let i = 0; i < byteCharacters.length; i++) {
+		byteNumbers[i] = byteCharacters.charCodeAt(i);
+		}
+
+		const byteArray = new Uint8Array(byteNumbers);
+		const blob = new Blob([byteArray], { type: 'application/pdf' });
+
+		const url = window.URL.createObjectURL(blob);
+		const link = document.createElement('a');
+		link.href = url;
+		link.download = `Ticket ${ticketId} Closed.pdf`;
+		document.body.appendChild(link);
+		link.click();
+		document.body.removeChild(link);
+		window.URL.revokeObjectURL(url);
+  }
 </script>
 
 <div class="min-h-screen bg-background">
@@ -166,17 +187,34 @@
 											{/if}
 											<span class="font-medium capitalize">{ticket.status}</span>
 										</div>
+										{#if ticket.status === 'Solved'}
+											<span class="px-3 py-1 bg-primary bg-slate-400/50 hover:bg-slate-500/40 text-primary-foreground rounded-lg transition-colors text-sm font-medium shadow-lg">
+												Ticket Cerrado
+											</span>
+										{:else}
 										<div class="flex items-center gap-2">
-											<form method="POST" action="?/closeTicket">
+											<form 
+												method="POST" 
+												action="?/closeTicket"
+												use:enhance={({ formData }) => {
+												return async ({ result, update }) => {
+													if (result.type === 'success' && result.data?.pdfData && typeof result.data.pdfData === 'string' && typeof result.data.ticketId === 'number') {
+													downloadPDF(result.data.pdfData, result.data.ticketId);
+													}
+													await update();
+												};
+												}}
+											>
 												<input type="hidden" name="TicketId" value={ticket.id} />
 												<button
-													type="submit"
-													class="px-3 py-1 bg-primary bg-slate-400/50 hover:bg-slate-500/40 text-primary-foreground rounded-lg transition-colors text-sm font-medium shadow-lg"
+												type="submit"
+												class="px-3 py-1 bg-primary bg-slate-400/50 hover:bg-slate-500/40 text-primary-foreground rounded-lg transition-colors text-sm font-medium shadow-lg"
 												>
-													Close Ticket
+												Close Ticket
 												</button>
 											</form>
 										</div>
+										{/if}
 									</div>
 								</div>
 								<div class="border-t border-border pt-3">
