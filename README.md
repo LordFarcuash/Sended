@@ -1,18 +1,18 @@
 # Proyecto SvelteKit
 
-Aplicación web para gestionar tickets desarrollada con SvelteKit que utiliza MySQL como base de datos y autenticación JWT.
+Web application for managing tickets, developed with SvelteKit, using MySQL as the database and JWT for authentication.
 
-## 📋 Requisitos Previos
+## 📋 Prerequisites
 
-Antes de comenzar, asegúrate de tener instalado lo siguiente en tu sistema:
+Before you begin, make sure you have the following installed on your system:
 
-- **Node.js** (versión 18 o superior recomendada)
-- **MySQL** (versión 8.0 o superior recomendada)
-- **pnpm** (gestor de paquetes)
+- **Node.js** (version 18 or higher recommended)
+- **MySQL** (version 8.0 or higher recommended)
+- **pnpm** (package manager)
 
-### Instalar pnpm
+### Install pnpm
 
-Si aún no tienes pnpm instalado, ejecuta:
+If you don’t have pnpm installed yet, run:
 
 ```bash
 npm install -g pnpm
@@ -20,16 +20,16 @@ npm install -g pnpm
 
 ## 🚀 Instalación
 
-### 1. Clonar el repositorio
+### 1. Clone the repository
 
 ```bash
 git clone <url-del-repositorio>
 cd <nombre-del-proyecto>
 ```
 
-### 2. Configurar variables de entorno
+### 2. Set up environment variables
 
-Crea un archivo `.env` en la raíz del proyecto con el siguiente contenido:
+Create a .env file in the project root with the following content:
 
 ```env
 # Your Admin Credentials
@@ -49,39 +49,39 @@ DATABASE_PORT=3306
 DATABASE_NAME=sended
 ```
 
-> ⚠️ **Importante**: Asegúrate de cambiar `JWT_SECRET` por una cadena secreta segura. Puedes generar una usando:
+> ⚠️ **Important**: Asegúrate de cambiar `JWT_SECRET` with a secure secret string. You can generate one using:
 >
 > ```bash
 > node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
 > ```
 
-### 3. Configurar la base de datos
+### 3. Set up the database
 
-La base de datos se configura de manera automatica cuando arrancas el proyecto
+The database is automatically configured when you start the project.
 
 ````
 
-### 4. Instalar dependencias
+### 4. Install dependencies
 
 ```bash
 pnpm install
 ````
 
-## 💻 Uso
+## 💻 Usage
 
-### Modo Desarrollo
+### Development Mode
 
-Para iniciar el servidor de desarrollo:
+To start the development server:
 
 ```bash
 pnpm run dev
 ```
 
-La aplicación estará disponible en `http://localhost:5173` (o el puerto que SvelteKit asigne).
+The application will be available at `http://localhost:5173` (or whichever port SvelteKit assigns).
 
-### Modo Producción
+### Production Mode
 
-Para construir y ejecutar la aplicación en producción:
+To build and run the application in production:
 
 ```bash
 # Construir la aplicación
@@ -91,33 +91,33 @@ pnpm build
 pnpm preview
 ```
 
-## 🔐 Credenciales por Defecto
+## 🔐 Default Credentials
 
-- **Usuario Admin**: Ledanix
-- **Contraseña**: 123
+- **Admin User**: Ledanix
+- **Password**: 123
 
-> ⚠️ **Seguridad**: Cambia estas credenciales antes de desplegar a producción.
+> ⚠️ **Security Warning**: Change these credentials before deploying to production.
 
-## 🛠️ Stack Tecnológico
+## 🛠️ Tech Stack
 
 - **Frontend**: SvelteKit
-- **Base de Datos**: MySQL
-- **Autenticación**: JWT
+- **Database**: MySQL
+- **Authentication**: JWT
 - **Runtime**: Node.js
-- **Gestor de Paquetes**: pnpm
+- **Package Manager**: pnpm
 
 ## 📝 Notas
 
-- El nombre de la base de datos `sended` está configurado por defecto y no debe ser modificado.
-- Asegúrate de que el puerto 3306 de MySQL esté disponible.
-- Si cambias las credenciales de MySQL, actualiza las variables de entorno correspondientes.
+- The database name `sended` is configured by default and should not be changed.
+- Make sure the MySQL port 3306 is available
+- If you change your MySQL credentials, update the corresponding environment variables accordingly.
 
-## 🤝 Contribuir
+## 🤝 Contributing
 
-Si deseas contribuir a este proyecto, por favor:
+If you’d like to contribute to this project, please:
 
-1. Haz un fork del repositorio
-2. Crea una rama para tu feature (`git checkout -b feature/AmazingFeature`)
-3. Commit tus cambios (`git commit -m 'Add some AmazingFeature'`)
-4. Push a la rama (`git push origin feature/AmazingFeature`)
-5. Abre un Pull Request
+1. Fork the repository
+2. Create a new branch for your feature (`git checkout -b feature/AmazingFeature`)
+3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
